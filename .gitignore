@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.tsbuildinfo
+tests/*.cjs
+.env
+.env.*
+!.env.example
+.DS_Store
+.cursor/
+.gemini/
+.impeccable/
