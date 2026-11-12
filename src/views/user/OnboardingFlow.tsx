@@ -88,7 +88,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
       {/* Step Header */}
       <header className="bg-[#14161A] text-[#F9F9F7] border-2 border-[#14161A] p-4 sm:p-6 space-y-2.5">
         <div className="flex flex-wrap items-start justify-between gap-2">
-          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+          <h1 className="type-display text-white">
             {step === 1
               ? 'Who are you, where are you, and where do you want to go?'
               : 'How do you define "worth it"?'}
@@ -97,10 +97,10 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
             {step}/2
           </span>
         </div>
-        <div className="text-[11px] font-mono uppercase tracking-wider text-[#93C5FD]">
+        <div className="type-label text-[#93C5FD]">
           {step === 1 ? 'Step 1 of 2 · Minimal Signup (CI-1)' : 'Step 2 of 2 · Value Orientation (VO-1..3)'}
         </div>
-        <p className="text-sm text-[#D1D5DB] leading-relaxed">
+        <p className="type-dark-body text-[#D1D5DB]">
           {step === 1
             ? 'Rule CI-1: Signup asks only these three things. Everything else is requested progressively when relevant, with a clear reason.'
             : 'Rule VO-1: Two people with the same goal can want different things. Pick a starter archetype and nudge the weights—or finish immediately with Balanced Builder.'}

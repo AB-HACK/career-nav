@@ -57,10 +57,10 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({
       <header className="bg-[#14161A] text-[#F9F9F7] border-2 border-[#14161A] p-4 sm:p-6 space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+            <h1 className="type-display text-white">
               From {pathway.careerTitle} in {pathway.destinationName} to Today&apos;s Next Step
             </h1>
-            <p className="text-[11px] font-mono uppercase tracking-wider text-[#93C5FD] mt-1">
+            <p className="type-label text-[#93C5FD] mt-1.5">
               Engine 4 &amp; 6 · Gap Analysis &amp; Dynamic Roadmap (RM-1..6)
             </p>
           </div>
@@ -69,7 +69,7 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({
           </span>
         </div>
 
-        <p className="text-sm text-[#D1D5DB] leading-relaxed">
+        <p className="type-dark-body text-[#D1D5DB]">
           Keynote K9 &amp; K13: Tasks update your Career Identity on completion (CI-5), unlock prerequisite-dependent steps (RM-3), and adapt to your real capacity without streaks or guilt (EX-5).
         </p>
 
@@ -144,19 +144,19 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({
 
           {/* LAYER 1: TODAY'S NEXT STEP (RM-2) */}
           {todayTask && (
-            <section className="bg-[#14161A] text-white border-2 border-[#D92B2B] p-4 sm:p-5 space-y-3">
+            <section className="bg-[#27171A] text-white border-2 border-[#D92B2B] p-4 sm:p-5 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[11px] font-mono uppercase tracking-wider text-[#FCA5A5] font-bold">
+                <span className="inline-block bg-[#D92B2B] text-white text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 font-bold">
                   Layer 1 · Today&apos;s Next Step (RM-2)
                 </span>
-                <span className="text-xs font-mono text-[#D1D5DB]">
+                <span className="text-xs font-mono text-[#CBD5E1]">
                   {todayTask.effortHours}h · Impact {todayTask.careerImpact}/5
                 </span>
               </div>
               <h2 className="text-base sm:text-lg font-extrabold leading-snug">
                 {todayTask.title}
               </h2>
-              <p className="text-sm text-[#D1D5DB] leading-relaxed">
+              <p className="text-sm text-[#CBD5E1] leading-relaxed">
                 {todayTask.description}
               </p>
               <div className="text-xs sm:text-sm text-[#F9F9F7] bg-[#1F242D] p-3 border border-[#323846]">
@@ -185,11 +185,11 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({
 
           {/* LAYER 2: THIS WEEK'S ACTIONS (Capped at user.effectiveWeeklyCap) */}
           <section className="bg-white border-2 border-[#14161A] p-4 sm:p-5 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#D6D5CE] pb-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 bg-[#EFF6FF] border-b-2 border-[#1D4ED8] -mx-4 -mt-4 sm:-mx-5 sm:-mt-5 px-4 sm:px-5 py-3">
               <h2 className="text-sm font-extrabold uppercase tracking-wider text-[#14161A]">
                 Layer 2 · This Week&apos;s Actions (Max {user.effectiveWeeklyCap})
               </h2>
-              <span className="text-xs font-mono text-[#4B5563]">
+              <span className="text-xs font-mono font-bold text-[#1D4ED8]">
                 {weekTasks.filter((t) => t.status === 'Completed').length}/{weekTasks.length} completed
               </span>
             </div>

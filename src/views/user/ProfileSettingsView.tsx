@@ -81,14 +81,14 @@ export const ProfileSettingsView: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <header className="bg-[#14161A] text-[#F9F9F7] border-2 border-[#14161A] p-4 sm:p-6 space-y-2">
-        <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+        <h1 className="type-display text-white">
           {user.name || 'Career Navigator'}
         </h1>
-        <div className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-[#93C5FD]">
+        <div className="flex items-center gap-1.5 type-label text-[#93C5FD]">
           <UserCheck className="w-3.5 h-3.5 shrink-0" />
           <span>Engine 1 · Living Career Identity &amp; Settings (CI-3..7, VO-4)</span>
         </div>
-        <p className="text-sm text-[#D1D5DB] leading-relaxed pt-1">
+        <p className="type-dark-body text-[#D1D5DB] pt-1">
           Keynote K5 &amp; K6: Your Career Identity learns from what you complete and tracks Declared vs. Evidenced proof. Revisit your Value Orientation weights anytime.
         </p>
       </header>

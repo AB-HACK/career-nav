@@ -42,15 +42,15 @@ export const ExplorerDeciderView: React.FC = () => {
     <div className="space-y-6">
       {/* Header Banner */}
       <header className="bg-[#14161A] text-[#F9F9F7] border-2 border-[#14161A] p-4 sm:p-6 space-y-3">
-        <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+        <h1 className="type-display text-white">
           {modeTab === 'Explorer'
             ? 'Explorer Mode: Advisory Career Discovery'
             : 'Decider Mode: Side-by-Side Pathway Comparison'}
         </h1>
-        <div className="text-[11px] font-mono uppercase tracking-wider text-[#93C5FD]">
+        <div className="type-label text-[#93C5FD]">
           Engine 2 · Career Discovery (SM-1, SM-2, SM-4)
         </div>
-        <p className="text-sm text-[#D1D5DB] leading-relaxed">
+        <p className="type-dark-body text-[#D1D5DB]">
           <strong className="text-white">Keynote K3 (Non-Negotiable):</strong> Assessments and comparisons are advisory information, never a verdict. We never tell a user who wants Dermatology that Public Health suits them better. You control the destination.
         </p>
 

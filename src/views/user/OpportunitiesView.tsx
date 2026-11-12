@@ -91,10 +91,10 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
       <header className="bg-[#14161A] text-[#F9F9F7] border-2 border-[#14161A] p-4 sm:p-6 space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+            <h1 className="type-display text-white">
               Filter, Do Not List (Keynote K10)
             </h1>
-            <div className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-[#93C5FD] mt-1">
+            <div className="flex items-center gap-1.5 type-label text-[#93C5FD] mt-1.5">
               <Filter className="w-3.5 h-3.5 shrink-0" />
               <span>Engine 5 · 7-Stage Funnel &amp; Leverage (OP-2, LV-1)</span>
             </div>
@@ -104,33 +104,29 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
           </span>
         </div>
 
-        <p className="text-sm text-[#D1D5DB] leading-relaxed">
+        <p className="type-dark-body text-[#CBD5E1]">
           Scored against your <strong>{valueOrientation.archetype}</strong> weights. Tap any score badge to inspect the exact calculation table (Rule LV-6).
         </p>
 
         {/* Visual 7-Stage Funnel Bar */}
         <div className="bg-[#1F242D] border border-[#323846] p-3 space-y-1.5 text-xs">
           {[
-            { label: '1. Everything Available', count: stageCounts.s1_available, width: 'w-full' },
-            { label: '2. Relevant to Your Career', count: stageCounts.s2_relevant, width: 'w-11/12' },
-            { label: '3. Eligible for You (OP-3)', count: stageCounts.s3_eligible, width: 'w-10/12' },
-            { label: '4. Realistically Accessible', count: stageCounts.s4_accessible, width: 'w-9/12' },
-            { label: '5. Potentially Valuable (Combo)', count: stageCounts.s5_valuable, width: 'w-8/12' },
-            { label: '6. Worth Your Time (Not Low-Fit)', count: stageCounts.s6_worthTime, width: 'w-7/12' },
+            { label: '1. Everything Available', count: stageCounts.s1_available, width: 'w-full', tone: 'bg-[#14161A] text-[#CBD5E1]' },
+            { label: '2. Relevant to Your Career', count: stageCounts.s2_relevant, width: 'w-11/12', tone: 'bg-[#1B2230] text-[#CBD5E1]' },
+            { label: '3. Eligible for You (OP-3)', count: stageCounts.s3_eligible, width: 'w-10/12', tone: 'bg-[#1E293B] text-[#E2E8F0]' },
+            { label: '4. Realistically Accessible', count: stageCounts.s4_accessible, width: 'w-9/12', tone: 'bg-[#1E3A8A]/70 text-[#E2E8F0]' },
+            { label: '5. Potentially Valuable (Combo)', count: stageCounts.s5_valuable, width: 'w-8/12', tone: 'bg-[#1E3A8A] text-white' },
+            { label: '6. Worth Your Time (Not Low-Fit)', count: stageCounts.s6_worthTime, width: 'w-7/12', tone: 'bg-[#1D4ED8] text-white' },
             {
               label: `7. Curated Action (Capped at ${OPPORTUNITY_CURATED_CAP})`,
               count: Math.min(stageCounts.s7_recommended, OPPORTUNITY_CURATED_CAP),
               width: 'w-6/12',
-              highlight: true,
+              tone: 'bg-[#D92B2B] text-white font-bold',
             },
           ].map((st) => (
             <div key={st.label} className="flex items-center justify-between gap-2">
               <div
-                className={`${st.width} px-2.5 py-1 text-[11px] font-mono truncate ${
-                  st.highlight
-                    ? 'bg-[#D92B2B] text-white font-bold'
-                    : 'bg-[#14161A] text-[#D1D5DB]'
-                }`}
+                className={`${st.width} px-2.5 py-1 text-[11px] font-mono truncate ${st.tone}`}
               >
                 {st.label}
               </div>

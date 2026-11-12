@@ -58,10 +58,10 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
       <header className="bg-[#14161A] text-[#F9F9F7] border-2 border-[#14161A] p-4 sm:p-6 space-y-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+            <h1 className="type-display text-white">
               {pathway.careerTitle} → {pathway.destinationName}
             </h1>
-            <div className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-[#93C5FD] mt-1">
+            <div className="flex items-center gap-1.5 type-label text-[#93C5FD] mt-1.5">
               <Compass className="w-3.5 h-3.5 shrink-0" />
               <span>Engine 3 · Goal Framing Panel (Rule SM-5)</span>
             </div>
@@ -238,7 +238,13 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
               Lvl {progressMeta.current.level}: {progressMeta.current.name}
             </span>
           </div>
-          <div className="p-3 bg-[#1F242D] border border-[#323846]">
+          <div
+            className={`p-3 border ${
+              openGaps.length > 0
+                ? 'border-amber-400/70 bg-[#231F18]'
+                : 'border-[#323846] bg-[#1F242D]'
+            }`}
+          >
             <span className="text-[11px] font-mono text-[#9CA3AF] uppercase block">
               6. Your Gaps
             </span>

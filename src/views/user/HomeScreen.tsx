@@ -118,10 +118,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Header Strip */}
         <header className="border-b-[3px] border-[#14161A] pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#14161A] leading-tight">
+            <h1 className="type-display text-[#14161A]">
               This Week&apos;s Priority Schedule (Cap: {weeklyPriorityTasks.length}/{user.effectiveWeeklyCap})
             </h1>
-            <p className="font-mono text-xs uppercase tracking-wider text-[#1D4ED8] font-bold mt-1.5">
+            <p className="type-label text-[#1D4ED8] mt-1.5">
               Departure Corridor · {pathway.careerTitle} → {destOption.flag} {pathway.destinationName}
             </p>
           </div>
@@ -155,8 +155,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     key={lvl.level}
                     title={`Level ${lvl.level}: ${lvl.name}`}
                     className={`h-1.5 ${
-                      lvl.level <= progressMeta.current.level
+                      lvl.level === progressMeta.current.level
                         ? 'bg-[#D92B2B]'
+                        : lvl.level < progressMeta.current.level
+                        ? 'bg-[#3B82F6]'
                         : 'bg-[#323846]'
                     }`}
                   />
@@ -167,7 +169,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             {/* 2. WHERE AM I GOING? (HS-1) */}
             <button
               onClick={() => setActiveTab('pathway')}
-              className="min-h-[44px] text-left bg-[#1F242D] hover:bg-[#2A2E37] border border-[#323846] p-3 flex flex-col justify-between transition-colors group"
+              className="min-h-[44px] text-left bg-[#1F242D] hover:bg-[#252B36] border border-[#323846] hover:border-[#93C5FD] p-3 flex flex-col justify-between transition-colors group"
             >
               <div className="flex items-start justify-between gap-2 w-full">
                 <div className="min-w-0">
@@ -212,9 +214,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           {/* 4. WHAT SHOULD I DO NOW? — Today's Single Clear Next Step (HS-1, RM-2) */}
           {weeklyPriorityTasks[0] && (
-            <div className="bg-[#1F242D] border-2 border-[#D92B2B] p-3.5 space-y-2.5">
+            <div className="bg-[#27171A] border-2 border-[#D92B2B] p-3.5 space-y-2.5">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[11px] font-mono uppercase tracking-wider text-[#FCA5A5] font-bold">
+                <span className="px-2 py-0.5 bg-[#D92B2B] text-white text-[11px] font-mono uppercase tracking-wider font-bold">
                   4. What should I do now? · Today&apos;s Next Step
                 </span>
                 <span className="text-[11px] font-mono text-[#F9F9F7]">
@@ -299,11 +301,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <div>
               <h2
                 id="weekly-priorities-heading"
-                className="text-base sm:text-lg font-extrabold text-[#14161A]"
+                className="type-section text-[#14161A]"
               >
                 This Week&apos;s Priorities (Rule HS-2 &amp; K14)
               </h2>
-              <p className="text-xs sm:text-sm text-[#4B5563] mt-0.5">
+              <p className="type-body text-[#4B5563] mt-0.5">
                 Capped at {user.effectiveWeeklyCap} tasks/week ({user.weeklyHoursAvailable}h/wk capacity) — never a 25-task dump.
               </p>
             </div>
@@ -335,9 +337,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     key={task.id}
                     className={`p-4 flex flex-col sm:grid sm:grid-cols-[76px_1fr_76px_124px] sm:items-center gap-3 ${
                       isDone
-                        ? 'bg-[#F2F1EC]/70'
+                        ? 'bg-[#ECFDF5]/60'
                         : isLocked
-                        ? 'bg-[#F9F9F7] opacity-80'
+                        ? 'bg-[#F2F1EC]/70 opacity-85'
                         : 'bg-white'
                     }`}
                   >

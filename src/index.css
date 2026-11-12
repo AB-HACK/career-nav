@@ -14,8 +14,17 @@
     --color-signal-red: #D92B2B;
     --color-cobalt: #1D4ED8;
     --color-cobalt-tint: #EFF6FF;
+    --color-cobalt-light: #93C5FD;
+    --color-success: #047857;
+    --color-success-tint: #ECFDF5;
+    --color-warning: #B45309;
+    --color-warning-tint: #FFFBEB;
+    --color-dark-surface-red: #27171A;
+    --color-dark-text-secondary: #CBD5E1;
     --color-rule: #D6D5CE;
     --p-density: 1;
+    --p-scale: 1;
+    --p-color-amount: 0.5;
     color-scheme: light;
     caret-color: #D92B2B;
   }
@@ -25,9 +34,23 @@
     background-color: #F9F9F7;
     color: #14161A;
     font-family: 'Archivo', system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-tap-highlight-color: transparent;
     overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
   }
 
   .font-mono,
@@ -45,6 +68,52 @@
 
   a {
     text-underline-offset: 3px;
+  }
+}
+
+@layer components {
+  .type-display {
+    font-size: calc(clamp(1.5rem, 1.25rem + 1.1vw, 2rem) * var(--p-scale, 1));
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+  }
+
+  .type-section {
+    font-size: calc(1.25rem * var(--p-scale, 1));
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
+
+  .type-title {
+    font-size: calc(1rem * var(--p-scale, 1));
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .type-body {
+    font-size: calc(0.9375rem * var(--p-scale, 1));
+    font-weight: 400;
+    line-height: 1.55;
+    max-width: 68ch;
+  }
+
+  .type-dark-body {
+    font-size: calc(0.9375rem * var(--p-scale, 1));
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    max-width: 68ch;
+  }
+
+  .type-label {
+    font-family: 'Chivo Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
   }
 }
 
