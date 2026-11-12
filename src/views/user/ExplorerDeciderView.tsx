@@ -6,7 +6,8 @@ import { getPathwayForCareerAndDestination } from '../../data/pathwaysSeed';
 import { useNorthStore } from '../../store/useNorthStore';
 
 export const ExplorerDeciderView: React.FC = () => {
-  const { user, handOffToBuilderMode } = useNorthStore();
+  const user = useNorthStore((s) => s.user);
+  const handOffToBuilderMode = useNorthStore((s) => s.handOffToBuilderMode);
 
   const [modeTab, setModeTab] = useState<'Explorer' | 'Decider'>(
     user.startingMode === 'Decider' ? 'Decider' : 'Explorer'

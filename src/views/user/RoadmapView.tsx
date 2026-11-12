@@ -23,14 +23,14 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({
   gaps,
   tasks,
 }) => {
-  const {
-    user,
-    identityItems,
-    completeTask,
-    markTaskStatus,
-    applyBehindScheduleOption,
-    attachEvidenceToItem,
-  } = useNorthStore();
+  const user = useNorthStore((s) => s.user);
+  const identityItems = useNorthStore((s) => s.identityItems);
+  const completeTask = useNorthStore((s) => s.completeTask);
+  const markTaskStatus = useNorthStore((s) => s.markTaskStatus);
+  const applyBehindScheduleOption = useNorthStore(
+    (s) => s.applyBehindScheduleOption
+  );
+  const attachEvidenceToItem = useNorthStore((s) => s.attachEvidenceToItem);
 
   const [activeLayerTab, setActiveLayerTab] = useState<'tasks' | 'gaps'>('tasks');
   const isReviewMode =

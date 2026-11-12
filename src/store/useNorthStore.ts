@@ -236,6 +236,32 @@ const DEFAULT_CONSENT: ConsentState = {
   barriers: { granted: true, updatedAt: '2026-11-09T08:00:00Z' },
 };
 
+const DEFAULT_GOAL_HISTORY: Array<{
+  careerId: CareerFieldId;
+  destinationId: DestinationId;
+  changedAt: string;
+}> = [
+  {
+    careerId: DEFAULT_USER.goalCareerId,
+    destinationId: DEFAULT_USER.destinationId,
+    changedAt: '2026-11-09T08:00:00Z',
+  },
+];
+
+export type PersistedNorthState = Pick<
+  NorthState,
+  | 'user'
+  | 'valueOrientation'
+  | 'identityItems'
+  | 'consent'
+  | 'opportunityLifecycle'
+  | 'taskStatusOverrides'
+  | 'goalHistory'
+  | 'behindScheduleBannerDismissed'
+>;
+
+export const NORTH_STORE_VERSION = 1;
+
 export const useNorthStore = create<NorthState>()(
   persist(
     (set) => ({
@@ -246,13 +272,7 @@ export const useNorthStore = create<NorthState>()(
       opportunities: SEEDED_OPPORTUNITIES,
       opportunityLifecycle: {},
       taskStatusOverrides: {},
-      goalHistory: [
-        {
-          careerId: DEFAULT_USER.goalCareerId,
-          destinationId: DEFAULT_USER.destinationId,
-          changedAt: '2026-11-09T08:00:00Z',
-        },
-      ],
+      goalHistory: DEFAULT_GOAL_HISTORY,
       activeTab:
         typeof window !== 'undefined'
           ? resolveTabFromPathname(window.location.pathname)
@@ -738,9 +758,42 @@ export const useNorthStore = create<NorthState>()(
     }),
     {
       name: 'north-career-navigation-v1',
+      version: NORTH_STORE_VERSION,
+      partialize: (state): PersistedNorthState => ({
+        user: state.user,
+        valueOrientation: state.valueOrientation,
+        identityItems: state.identityItems,
+        consent: state.consent,
+        opportunityLifecycle: state.opportunityLifecycle,
+        taskStatusOverrides: state.taskStatusOverrides,
+        goalHistory: state.goalHistory,
+        behindScheduleBannerDismissed: state.behindScheduleBannerDismissed,
+      }),
+      migrate: (persistedState: unknown, _version: number): PersistedNorthState => {
+        const raw = (
+          persistedState && typeof persistedState === 'object' ? persistedState : {}
+        ) as Partial<PersistedNorthState>;
+        return {
+          user: { ...DEFAULT_USER, ...(raw.user || {}) },
+          valueOrientation: {
+            ...DEFAULT_VALUE_ORIENTATION,
+            ...(raw.valueOrientation || {}),
+          },
+          identityItems: Array.isArray(raw.identityItems)
+            ? raw.identityItems
+            : DEFAULT_IDENTITY_ITEMS,
+          consent: { ...DEFAULT_CONSENT, ...(raw.consent || {}) },
+          opportunityLifecycle: raw.opportunityLifecycle || {},
+          taskStatusOverrides: raw.taskStatusOverrides || {},
+          goalHistory: Array.isArray(raw.goalHistory)
+            ? raw.goalHistory
+            : DEFAULT_GOAL_HISTORY,
+          behindScheduleBannerDismissed: Boolean(raw.behindScheduleBannerDismissed),
+        };
+      },
       merge: (persistedState, currentState) => ({
         ...currentState,
-        ...(persistedState as Partial<NorthState>),
+        ...(persistedState as Partial<PersistedNorthState>),
         activeTab:
           typeof window !== 'undefined'
             ? resolveTabFromPathname(window.location.pathname)

@@ -8,4 +8,4 @@ tests/*.cjs
 .DS_Store
 .cursor/
 .gemini/
-.impeccable/
+.impeccable/config.local.json

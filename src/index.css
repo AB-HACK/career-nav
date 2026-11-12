@@ -3,25 +3,80 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-paper: #F9F9F7;
+    --color-paper-warm: #F2F1EC;
+    --color-surface: #FFFFFF;
+    --color-ink: #14161A;
+    --color-ink-muted: #4B5563;
+    --color-rail: #14161A;
+    --color-rail-elevated: #1F242D;
+    --color-signal-red: #D92B2B;
+    --color-cobalt: #1D4ED8;
+    --color-cobalt-tint: #EFF6FF;
+    --color-rule: #D6D5CE;
+    --p-density: 1;
+    color-scheme: light;
+    caret-color: #D92B2B;
+  }
+
+  html,
   body {
+    background-color: #F9F9F7;
+    color: #14161A;
+    font-family: 'Archivo', system-ui, -apple-system, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-tap-highlight-color: transparent;
+    overflow-x: clip;
+  }
+
+  .font-mono,
+  code,
+  pre,
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Crisp keyboard focus rings across all interactive controls */
+  :focus-visible {
+    outline: 2px solid #1D4ED8;
+    outline-offset: 2px;
+  }
+
+  a {
+    text-underline-offset: 3px;
   }
 }
 
-/* Custom subtle scrollbars for mobile shell */
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(15, 23, 42, 0.16);
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(15, 23, 42, 0.3);
+/* Native dialog reset & backdrop styling */
+dialog::backdrop {
+  background: rgba(20, 22, 26, 0.65);
+  backdrop-filter: blur(2px);
 }
 
+/* Custom scrollbars themed to Kursbuch graphite & schedule paper */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F2F1EC;
+}
+::-webkit-scrollbar-thumb {
+  background: #9CA3AF;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4B5563;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -45,18 +45,20 @@ export const App: React.FC = () => {
   const [route, setRoute] = useState<AppRoute>(resolveCurrentRoute);
   const [showOnboardingModal, setShowOnboardingModal] = useState(false);
 
-  const {
-    user,
-    valueOrientation,
-    identityItems,
-    consent,
-    opportunities,
-    opportunityLifecycle,
-    taskStatusOverrides,
-    activeBreakdownOpportunityId,
-    setActiveTab,
-    setActiveBreakdownOpportunityId,
-  } = useNorthStore();
+  const user = useNorthStore((s) => s.user);
+  const valueOrientation = useNorthStore((s) => s.valueOrientation);
+  const identityItems = useNorthStore((s) => s.identityItems);
+  const consent = useNorthStore((s) => s.consent);
+  const opportunities = useNorthStore((s) => s.opportunities);
+  const opportunityLifecycle = useNorthStore((s) => s.opportunityLifecycle);
+  const taskStatusOverrides = useNorthStore((s) => s.taskStatusOverrides);
+  const activeBreakdownOpportunityId = useNorthStore(
+    (s) => s.activeBreakdownOpportunityId
+  );
+  const setActiveTab = useNorthStore((s) => s.setActiveTab);
+  const setActiveBreakdownOpportunityId = useNorthStore(
+    (s) => s.setActiveBreakdownOpportunityId
+  );
 
   useEffect(() => {
     const syncRouteFromLocation = () => {
@@ -127,8 +129,9 @@ export const App: React.FC = () => {
       ),
     [
       opportunities,
-      user,
-      valueOrientation,
+      user.goalCareerId,
+      valueOrientation.archetype,
+      valueOrientation.weights,
       identityItems,
       consent,
       gaps,
@@ -145,7 +148,15 @@ export const App: React.FC = () => {
         evaluatedOpportunities,
         taskStatusOverrides
       ),
-    [user, pathway, gaps, evaluatedOpportunities, taskStatusOverrides]
+    [
+      user.id,
+      user.weeklyHoursAvailable,
+      user.effectiveWeeklyCap,
+      pathway,
+      gaps,
+      evaluatedOpportunities,
+      taskStatusOverrides,
+    ]
   );
 
   const progressMeta = useMemo(
@@ -156,13 +167,26 @@ export const App: React.FC = () => {
         identityItems,
         evaluatedOpportunities
       ),
-    [user, gaps, identityItems, evaluatedOpportunities]
+    [
+      user.startingMode,
+      user.onboardingCompleted,
+      user.deciderCandidateCareerIds,
+      gaps,
+      identityItems,
+      evaluatedOpportunities,
+    ]
   );
 
   const insights = useMemo(
     () =>
       evaluateAccountabilityAndInsights(user, gaps, evaluatedOpportunities),
-    [user, gaps, evaluatedOpportunities]
+    [
+      user.weeklyHoursAvailable,
+      user.targetMonthsToLaunch,
+      user.dismissedHighLeverageCount,
+      gaps,
+      evaluatedOpportunities,
+    ]
   );
 
   const activeBreakdownEvaluated = useMemo(

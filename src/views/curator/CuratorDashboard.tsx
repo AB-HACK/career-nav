@@ -21,11 +21,13 @@ interface CuratorDashboardProps {
 export const CuratorDashboard: React.FC<CuratorDashboardProps> = ({
   onNavigateRoute,
 }) => {
-  const {
-    opportunities,
-    curatorUpdateVerificationState,
-    curatorAddDiscoveredOpportunity,
-  } = useNorthStore();
+  const opportunities = useNorthStore((s) => s.opportunities);
+  const curatorUpdateVerificationState = useNorthStore(
+    (s) => s.curatorUpdateVerificationState
+  );
+  const curatorAddDiscoveredOpportunity = useNorthStore(
+    (s) => s.curatorAddDiscoveredOpportunity
+  );
 
   const [filterState, setFilterState] = useState<VerificationState | 'all'>('all');
   const [reviewerName, setReviewerName] = useState('Adaeze N. (Lead Curator)');

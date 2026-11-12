@@ -38,7 +38,10 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
   tasks,
   progressMeta,
 }) => {
-  const { user, identityItems, updateGoalAndDestination, setActiveTab } = useNorthStore();
+  const user = useNorthStore((s) => s.user);
+  const identityItems = useNorthStore((s) => s.identityItems);
+  const updateGoalAndDestination = useNorthStore((s) => s.updateGoalAndDestination);
+  const setActiveTab = useNorthStore((s) => s.setActiveTab);
   const [showDestinationSwitcher, setShowDestinationSwitcher] = useState(false);
   const [customGoalInput, setCustomGoalInput] = useState(
     user.customGoalText || 'Space Law & Orbital Policy'

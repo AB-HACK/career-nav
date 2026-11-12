@@ -20,21 +20,19 @@ import { useNorthStore } from '../../store/useNorthStore';
 import { ProgressivePromptCard } from '../../components/shared/ProgressivePromptCard';
 
 export const ProfileSettingsView: React.FC = () => {
-  const {
-    user,
-    valueOrientation,
-    identityItems,
-    consent,
-    goalHistory,
-    setValueOrientation,
-    addOrUpdateIdentityItem,
-    attachEvidenceToItem,
-    removeIdentityItem,
-    toggleConsent,
-    updateCapacitySettings,
-    resetOrDeleteProfileData,
-    resetToDefaultDemoUser,
-  } = useNorthStore();
+  const user = useNorthStore((s) => s.user);
+  const valueOrientation = useNorthStore((s) => s.valueOrientation);
+  const identityItems = useNorthStore((s) => s.identityItems);
+  const consent = useNorthStore((s) => s.consent);
+  const goalHistory = useNorthStore((s) => s.goalHistory);
+  const setValueOrientation = useNorthStore((s) => s.setValueOrientation);
+  const addOrUpdateIdentityItem = useNorthStore((s) => s.addOrUpdateIdentityItem);
+  const attachEvidenceToItem = useNorthStore((s) => s.attachEvidenceToItem);
+  const removeIdentityItem = useNorthStore((s) => s.removeIdentityItem);
+  const toggleConsent = useNorthStore((s) => s.toggleConsent);
+  const updateCapacitySettings = useNorthStore((s) => s.updateCapacitySettings);
+  const resetOrDeleteProfileData = useNorthStore((s) => s.resetOrDeleteProfileData);
+  const resetToDefaultDemoUser = useNorthStore((s) => s.resetToDefaultDemoUser);
 
   const [newTitle, setNewTitle] = useState('');
   const [newDetail, setNewDetail] = useState('');

@@ -35,13 +35,15 @@ const LIFECYCLE_STEPS: OpportunityLifecycleStatus[] = [
 export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
   evaluatedOpportunities,
 }) => {
-  const {
-    valueOrientation,
-    updateOpportunityLifecycle,
-    dismissOpportunity,
-    setActiveBreakdownOpportunityId,
-    setActiveTab,
-  } = useNorthStore();
+  const valueOrientation = useNorthStore((s) => s.valueOrientation);
+  const updateOpportunityLifecycle = useNorthStore(
+    (s) => s.updateOpportunityLifecycle
+  );
+  const dismissOpportunity = useNorthStore((s) => s.dismissOpportunity);
+  const setActiveBreakdownOpportunityId = useNorthStore(
+    (s) => s.setActiveBreakdownOpportunityId
+  );
+  const setActiveTab = useNorthStore((s) => s.setActiveTab);
 
   const [viewMode, setViewMode] = useState<'curated' | 'filtered_audit'>('curated');
   const [selectedType, setSelectedType] = useState<OpportunityType | 'All'>('All');

@@ -39,14 +39,16 @@ const round2 = (n: number) => Math.round(n * 100) / 100;
 export const PrdSimulatorView: React.FC<PrdSimulatorViewProps> = ({
   onNavigateRoute,
 }) => {
-  const {
-    user,
-    valueOrientation,
-    setValueOrientation,
-    simulateMissedTasksWorkloadScaling,
-    simulateFiveSubmissionsZeroOutcomes,
-    resetToDefaultDemoUser,
-  } = useNorthStore();
+  const user = useNorthStore((s) => s.user);
+  const valueOrientation = useNorthStore((s) => s.valueOrientation);
+  const setValueOrientation = useNorthStore((s) => s.setValueOrientation);
+  const simulateMissedTasksWorkloadScaling = useNorthStore(
+    (s) => s.simulateMissedTasksWorkloadScaling
+  );
+  const simulateFiveSubmissionsZeroOutcomes = useNorthStore(
+    (s) => s.simulateFiveSubmissionsZeroOutcomes
+  );
+  const resetToDefaultDemoUser = useNorthStore((s) => s.resetToDefaultDemoUser);
 
   const [facts, setFacts] = useState<OpportunityFacts>(DEFAULT_SEC9_FACTS);
   const [simVerificationState, setSimVerificationState] =

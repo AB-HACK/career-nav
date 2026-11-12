@@ -19,7 +19,9 @@ interface OnboardingFlowProps {
 }
 
 export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) => {
-  const { user, valueOrientation, completeOnboarding } = useNorthStore();
+  const user = useNorthStore((s) => s.user);
+  const valueOrientation = useNorthStore((s) => s.valueOrientation);
+  const completeOnboarding = useNorthStore((s) => s.completeOnboarding);
 
   const [step, setStep] = useState<1 | 2>(1);
   const [name, setName] = useState(user.name || 'Amara Okafor');

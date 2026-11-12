@@ -65,16 +65,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   progressMeta,
   insights,
 }) => {
-  const {
-    user,
-    valueOrientation,
-    behindScheduleBannerDismissed,
-    completeTask,
-    applyBehindScheduleOption,
-    updateOpportunityLifecycle,
-    setActiveTab,
-    setActiveBreakdownOpportunityId,
-  } = useNorthStore();
+  const user = useNorthStore((s) => s.user);
+  const valueOrientation = useNorthStore((s) => s.valueOrientation);
+  const behindScheduleBannerDismissed = useNorthStore(
+    (s) => s.behindScheduleBannerDismissed
+  );
+  const completeTask = useNorthStore((s) => s.completeTask);
+  const applyBehindScheduleOption = useNorthStore(
+    (s) => s.applyBehindScheduleOption
+  );
+  const updateOpportunityLifecycle = useNorthStore(
+    (s) => s.updateOpportunityLifecycle
+  );
+  const setActiveTab = useNorthStore((s) => s.setActiveTab);
+  const setActiveBreakdownOpportunityId = useNorthStore(
+    (s) => s.setActiveBreakdownOpportunityId
+  );
 
   // If user is in Explorer or Decider mode, render the Discovery / Compare view at top with seamless handoff
   if (user.startingMode === 'Explorer' || user.startingMode === 'Decider') {

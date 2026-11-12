@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import {
   Compass,
   Home,
-  Map,
   CheckSquare,
   Filter,
   UserCheck,
@@ -29,7 +28,10 @@ export const MobileShell: React.FC<MobileShellProps> = ({
   onNavigateRoute,
   onStartOnboardingDemo,
 }) => {
-  const { user, valueOrientation, activeTab, setActiveTab } = useNorthStore();
+  const startingMode = useNorthStore((s) => s.user.startingMode);
+  const archetype = useNorthStore((s) => s.valueOrientation.archetype);
+  const activeTab = useNorthStore((s) => s.activeTab);
+  const setActiveTab = useNorthStore((s) => s.setActiveTab);
   const mainRef = useRef<HTMLElement>(null);
   const isReviewMode =
     import.meta.env.VITE_REVIEW_MODE === 'true' ||
@@ -40,12 +42,48 @@ export const MobileShell: React.FC<MobileShellProps> = ({
     window.scrollTo({ top: 0, left: 0 });
   }, [currentRoute, activeTab]);
 
-  const navItems: Array<{ id: ActiveUserTab; label: string; icon: React.ReactNode }> = [
-    { id: 'home', label: 'Home', icon: <Home className="w-4 h-4" /> },
-    { id: 'pathway', label: 'Pathway', icon: <Compass className="w-4 h-4" /> },
-    { id: 'roadmap', label: 'Roadmap', icon: <CheckSquare className="w-4 h-4" /> },
-    { id: 'opportunities', label: 'Funnel', icon: <Filter className="w-4 h-4" /> },
-    { id: 'profile', label: 'Identity', icon: <UserCheck className="w-4 h-4" /> },
+  const navItems: Array<{
+    id: ActiveUserTab;
+    label: string;
+    desktopLabel: string;
+    code: string;
+    icon: React.ReactNode;
+  }> = [
+    {
+      id: 'home',
+      label: 'Home',
+      desktopLabel: 'Home Timetable',
+      code: '01',
+      icon: <Home className="w-4 h-4 shrink-0" />,
+    },
+    {
+      id: 'pathway',
+      label: 'Pathway',
+      desktopLabel: 'Pathway Matrix',
+      code: '02',
+      icon: <Compass className="w-4 h-4 shrink-0" />,
+    },
+    {
+      id: 'roadmap',
+      label: 'Roadmap',
+      desktopLabel: 'Roadmap Schedule',
+      code: '03',
+      icon: <CheckSquare className="w-4 h-4 shrink-0" />,
+    },
+    {
+      id: 'opportunities',
+      label: 'Funnel',
+      desktopLabel: 'Opportunity Funnel',
+      code: '04',
+      icon: <Filter className="w-4 h-4 shrink-0" />,
+    },
+    {
+      id: 'profile',
+      label: 'Identity',
+      desktopLabel: 'Career Identity',
+      code: '05',
+      icon: <UserCheck className="w-4 h-4 shrink-0" />,
+    },
   ];
 
   const handleTabSelect = (tab: ActiveUserTab) => {
@@ -53,110 +91,282 @@ export const MobileShell: React.FC<MobileShellProps> = ({
     onNavigateRoute(TAB_TO_PATH[tab]);
   };
 
+  const isItemActive = (id: ActiveUserTab) =>
+    currentRoute !== '404' &&
+    (currentRoute ? currentRoute === TAB_TO_PATH[id] : activeTab === id);
+
   return (
-    <div className="min-h-screen bg-[#E8E6DF] flex flex-col items-center justify-between py-0 sm:py-6 px-0 sm:px-4">
-      {/* Centered Phone-Width Shell (440px max-w) */}
-      <div className="w-full max-w-[440px] min-h-screen sm:min-h-[840px] bg-[#F9F9F7] sm:rounded-[28px] sm:shadow-2xl sm:border sm:border-stone-300/90 flex flex-col overflow-hidden relative">
-        {/* Top App Bar */}
-        <header className="bg-[#0F172A] text-white px-4 py-3 flex items-center justify-between shrink-0 border-b border-slate-800">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center">
-              <Compass className="w-4 h-4 text-emerald-400" />
+    <div className="min-h-dvh w-full bg-[#F9F9F7] text-[#14161A] flex flex-col md:flex-row">
+      {/* =====================================================================
+          PHONE TOP BAR (< 768px)
+         ===================================================================== */}
+      <header className="md:hidden sticky top-0 z-30 bg-[#14161A] text-[#F9F9F7] px-4 py-2.5 flex items-center justify-between border-b-2 border-[#14161A]">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div
+            aria-hidden="true"
+            className="w-8 h-8 bg-[#D92B2B] text-white font-mono font-bold text-sm grid place-items-center shrink-0"
+          >
+            N
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold tracking-tight text-base text-white">
+                NORTH
+              </span>
+              <span className="text-[11px] px-1.5 py-0.5 bg-[#1F242D] text-[#93C5FD] font-mono uppercase">
+                {startingMode}
+              </span>
             </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold tracking-tight text-sm text-white">NORTH</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-emerald-300 font-mono">
-                  {user.startingMode}
-                </span>
+            <p className="text-[11px] text-[#9CA3AF] leading-none mt-0.5 truncate">
+              Career Navigation System
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={() => handleTabSelect('profile')}
+            title="Value Orientation Weighting Layer"
+            className="min-h-[44px] inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-[#1F242D] hover:bg-[#2A2E37] border border-[#323846] text-[11px] font-mono text-[#F9F9F7] transition-colors"
+          >
+            <Sliders className="w-3.5 h-3.5 text-[#93C5FD] shrink-0" />
+            <span className="truncate max-w-[100px]">{archetype}</span>
+          </button>
+          {isReviewMode && (
+            <button
+              onClick={onStartOnboardingDemo}
+              className="min-h-[44px] px-2.5 py-1.5 bg-[#1F242D] hover:bg-[#2A2E37] border border-[#323846] text-[11px] font-mono text-[#D1D5DB] transition-colors"
+              title="Replay 3-Question Signup & Onboarding"
+            >
+              Signup Flow
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* =====================================================================
+          TABLET PERSISTENT LEFT ICON RAIL (768px – 1023px)
+         ===================================================================== */}
+      <aside
+        aria-label="Tablet Navigation Rail"
+        className="hidden md:flex lg:hidden w-[76px] shrink-0 bg-[#14161A] text-[#F9F9F7] border-r-2 border-[#14161A] flex-col justify-between py-4 px-2 sticky top-0 h-dvh"
+      >
+        <div className="flex flex-col items-center gap-4">
+          <button
+            onClick={() => handleTabSelect('home')}
+            className="w-11 h-11 bg-[#D92B2B] text-white font-mono font-bold text-base grid place-items-center"
+            title="NORTH — Career Navigation System"
+          >
+            N
+          </button>
+
+          <nav
+            aria-label="Primary Navigation"
+            className="w-full flex flex-col gap-1.5"
+          >
+            {navItems.map((item) => {
+              const active = isItemActive(item.id);
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleTabSelect(item.id)}
+                  aria-current={active ? 'page' : undefined}
+                  className={`min-h-[48px] w-full px-1 py-1.5 flex flex-col items-center justify-center gap-1 transition-colors border ${
+                    active
+                      ? 'bg-[#1F242D] text-white font-bold border-[#D92B2B]'
+                      : 'text-[#9CA3AF] hover:text-white hover:bg-[#1F242D]/60 font-medium border-transparent'
+                  }`}
+                >
+                  {item.icon}
+                  <span className="text-[11px] leading-none tracking-tight">
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="flex flex-col items-center gap-2">
+          <button
+            onClick={() => handleTabSelect('profile')}
+            title={`Value Orientation: ${archetype}`}
+            className="min-h-[44px] w-full py-2 px-1 bg-[#1F242D] hover:bg-[#2A2E37] border border-[#323846] flex flex-col items-center justify-center gap-1 text-[#93C5FD]"
+          >
+            <Sliders className="w-4 h-4" />
+            <span className="text-[11px] font-mono leading-none">VO</span>
+          </button>
+          {isReviewMode && (
+            <button
+              onClick={onStartOnboardingDemo}
+              title="Replay 3-Question Signup & Onboarding"
+              className="min-h-[44px] w-full py-1.5 px-1 bg-[#1F242D] hover:bg-[#2A2E37] border border-[#323846] text-[11px] font-mono text-[#D1D5DB]"
+            >
+              Demo
+            </button>
+          )}
+        </div>
+      </aside>
+
+      {/* =====================================================================
+          DESKTOP PERSISTENT LEFT SIDEBAR (>= 1024px)
+         ===================================================================== */}
+      <aside
+        aria-label="Desktop Navigation Sidebar"
+        className="hidden lg:flex w-[256px] shrink-0 bg-[#14161A] text-[#F9F9F7] border-r-2 border-[#14161A] flex-col justify-between p-6 sticky top-0 h-dvh"
+      >
+        <div>
+          <div className="flex items-center gap-3 pb-5 border-b border-[#2A2E37]">
+            <div
+              aria-hidden="true"
+              className="w-9 h-9 bg-[#D92B2B] text-white font-mono font-bold text-base grid place-items-center shrink-0"
+            >
+              N
+            </div>
+            <div className="min-w-0">
+              <div className="text-xl font-extrabold tracking-tight text-white leading-none">
+                NORTH
               </div>
-              <p className="text-[10px] text-slate-400 leading-none mt-0.5">
+              <div className="font-mono text-[11px] text-[#93C5FD] uppercase mt-1">
+                MODE · {startingMode}
+              </div>
+              <p className="text-[11px] text-[#9CA3AF] mt-0.5">
                 Career Navigation System
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => handleTabSelect('profile')}
-              title="Value Orientation Weighting Layer"
-              className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-[11px] text-stone-200 transition-colors"
-            >
-              <Sliders className="w-3 h-3 text-emerald-400" />
-              <span className="truncate max-w-[105px]">{valueOrientation.archetype}</span>
-            </button>
-            {isReviewMode && (
-              <button
-                onClick={onStartOnboardingDemo}
-                className="px-2 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] text-slate-300 transition-colors"
-                title="Replay 3-Question Signup & Onboarding"
-              >
-                Signup Flow
-              </button>
-            )}
-          </div>
-        </header>
+          <nav
+            aria-label="Primary Navigation"
+            className="mt-6 flex flex-col gap-1.5"
+          >
+            {navItems.map((item) => {
+              const active = isItemActive(item.id);
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleTabSelect(item.id)}
+                  aria-current={active ? 'page' : undefined}
+                  className={`min-h-[44px] w-full px-3.5 py-2.5 text-sm font-semibold flex items-center justify-between transition-colors border ${
+                    active
+                      ? 'bg-[#1F242D] text-white border-[#D92B2B]'
+                      : 'text-[#9CA3AF] hover:text-white hover:bg-[#1F242D]/60 border-transparent'
+                  }`}
+                >
+                  <span className="flex items-center gap-2.5">
+                    {item.icon}
+                    <span>{item.desktopLabel}</span>
+                  </span>
+                  <span
+                    className={`font-mono text-[11px] px-1.5 py-0.5 ${
+                      active
+                        ? 'bg-[#D92B2B] text-white font-bold'
+                        : 'text-[#9CA3AF]'
+                    }`}
+                  >
+                    {item.code}
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
 
-        {/* Scrollable Content Viewport */}
-        <main ref={mainRef} className="flex-1 overflow-y-auto pb-20">
+        <div className="space-y-3">
+          <button
+            onClick={() => handleTabSelect('profile')}
+            title="Value Orientation Weighting Layer"
+            className="w-full text-left bg-[#1F242D] hover:bg-[#2A2E37] border border-[#323846] p-3.5 transition-colors"
+          >
+            <div className="flex items-center justify-between text-[11px] font-mono uppercase text-[#9CA3AF]">
+              <span>Value Orientation</span>
+              <Sliders className="w-3.5 h-3.5 text-[#93C5FD]" />
+            </div>
+            <div className="text-sm font-bold text-white mt-1">{archetype}</div>
+          </button>
+
+          {isReviewMode && (
+            <button
+              onClick={onStartOnboardingDemo}
+              className="min-h-[44px] w-full px-3 py-2 bg-[#1F242D] hover:bg-[#2A2E37] border border-[#323846] text-xs font-mono text-[#D1D5DB] text-left transition-colors"
+              title="Replay 3-Question Signup & Onboarding"
+            >
+              Replay Signup Flow →
+            </button>
+          )}
+        </div>
+      </aside>
+
+      {/* =====================================================================
+          FLUID MAIN WORKSPACE (Capped near 1440px on ultrawide)
+         ===================================================================== */}
+      <div className="flex-1 min-w-0 flex flex-col">
+        <main
+          ref={mainRef}
+          className="flex-1 w-full max-w-[1440px] mx-auto px-4 py-5 md:px-6 md:py-6 lg:px-10 lg:py-8 pb-[calc(5.25rem+env(safe-area-inset-bottom))] md:pb-8"
+        >
           {children}
         </main>
 
-        {/* Bottom 5-Tab Navigation Bar */}
-        <nav
-          aria-label="Primary Navigation"
-          className="absolute bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-stone-200 px-2 py-1.5 flex items-center justify-around z-30"
-        >
-          {navItems.map((item) => {
-            const isActive =
-              currentRoute !== '404' &&
-              (currentRoute ? currentRoute === TAB_TO_PATH[item.id] : activeTab === item.id);
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleTabSelect(item.id)}
-                className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all ${
-                  isActive
-                    ? 'text-emerald-900 font-bold bg-emerald-50/90'
-                    : 'text-slate-500 hover:text-slate-900 font-medium'
-                }`}
-              >
-                {item.icon}
-                <span className="text-[10px] mt-0.5 tracking-tight">{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
+        {isReviewMode && (
+          <footer className="w-full max-w-[1440px] mx-auto px-4 md:px-6 lg:px-10 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-6">
+            <div className="px-4 py-3 bg-[#F2F1EC] border-2 border-[#14161A] text-xs text-[#14161A] flex flex-wrap items-center justify-between gap-3">
+              <span className="font-mono text-[11px] uppercase tracking-wider font-bold">
+                Reviewer Routes:
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => onNavigateRoute('/')}
+                  className="min-h-[44px] px-3 py-1.5 bg-[#14161A] text-white font-mono text-xs font-bold"
+                >
+                  / (User App)
+                </button>
+                <button
+                  onClick={() => onNavigateRoute('/curator')}
+                  className="min-h-[44px] px-3 py-1.5 bg-white hover:bg-[#E4E2DA] text-[#14161A] border border-[#14161A] font-mono text-xs font-semibold transition-colors"
+                >
+                  /curator (Admin Queue)
+                </button>
+                <button
+                  onClick={() => onNavigateRoute('/simulator')}
+                  className="min-h-[44px] px-3 py-1.5 bg-white hover:bg-[#E4E2DA] text-[#14161A] border border-[#14161A] font-mono text-xs font-semibold transition-colors"
+                >
+                  /simulator (Sec. 9 Lab)
+                </button>
+              </div>
+            </div>
+          </footer>
+        )}
       </div>
 
-      {/* Discreet Dev / Reviewer Route Switcher outside the mobile user shell */}
-      {isReviewMode && (
-        <footer className="w-full max-w-[440px] mt-3 px-3 py-2 rounded-xl bg-stone-200/80 border border-stone-300/80 text-[11px] text-slate-600 flex flex-wrap items-center justify-between gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-slate-500">
-            Reviewer Routes:
-          </span>
-          <div className="flex items-center gap-2">
+      {/* =====================================================================
+          PHONE BOTTOM 5-TAB BAR (< 768px) WITH SAFE-AREA PADDING
+         ===================================================================== */}
+      <nav
+        aria-label="Mobile Primary Navigation"
+        className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-[#14161A] text-[#F9F9F7] border-t-2 border-[#14161A] px-1.5 pt-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] grid grid-cols-5 gap-1"
+      >
+        {navItems.map((item) => {
+          const active = isItemActive(item.id);
+          return (
             <button
-              onClick={() => onNavigateRoute('/')}
-              className="px-2 py-0.5 rounded bg-slate-900 text-white font-medium"
+              key={item.id}
+              onClick={() => handleTabSelect(item.id)}
+              aria-current={active ? 'page' : undefined}
+              className={`min-h-[48px] flex flex-col items-center justify-center py-1 px-1 transition-colors border ${
+                active
+                  ? 'bg-[#1F242D] text-white font-bold border-[#D92B2B]'
+                  : 'text-[#9CA3AF] hover:text-white font-medium border-transparent'
+              }`}
             >
-              / (User App)
+              {item.icon}
+              <span className="text-[11px] mt-1 leading-none tracking-tight">
+                {item.label}
+              </span>
             </button>
-            <button
-              onClick={() => onNavigateRoute('/curator')}
-              className="px-2 py-0.5 rounded bg-white hover:bg-stone-100 text-slate-800 border border-stone-300 font-medium transition-colors"
-            >
-              /curator (Admin Queue)
-            </button>
-            <button
-              onClick={() => onNavigateRoute('/simulator')}
-              className="px-2 py-0.5 rounded bg-white hover:bg-stone-100 text-slate-800 border border-stone-300 font-medium transition-colors"
-            >
-              /simulator (Sec. 9 Lab)
-            </button>
-          </div>
-        </footer>
-      )}
+          );
+        })}
+      </nav>
     </div>
   );
 };
