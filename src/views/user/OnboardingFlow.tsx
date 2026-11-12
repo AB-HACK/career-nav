@@ -84,69 +84,80 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
   };
 
   return (
-    <div className="p-4 space-y-5">
+    <div className="max-w-3xl mx-auto space-y-6">
       {/* Step Header */}
-      <div className="rounded-2xl bg-[#0F172A] text-white p-4 space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-400">
-            {step === 1 ? 'Step 1 of 2 · Minimal Signup (CI-1)' : 'Step 2 of 2 · Value Orientation (VO-1..3)'}
+      <header className="bg-[#14161A] text-[#F9F9F7] border-2 border-[#14161A] p-4 sm:p-6 space-y-2.5">
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+            {step === 1
+              ? 'Who are you, where are you, and where do you want to go?'
+              : 'How do you define "worth it"?'}
+          </h1>
+          <span className="text-xs font-mono px-2.5 py-1 bg-[#D92B2B] text-white font-bold shrink-0">
+            {step}/2
           </span>
-          <span className="text-[11px] text-slate-400">{step}/2</span>
         </div>
-        <h1 className="text-lg font-bold tracking-tight">
-          {step === 1
-            ? 'Who are you, where are you, and where do you want to go?'
-            : 'How do you define "worth it"?'}
-        </h1>
-        <p className="text-xs text-slate-300 leading-relaxed">
+        <div className="text-[11px] font-mono uppercase tracking-wider text-[#93C5FD]">
+          {step === 1 ? 'Step 1 of 2 · Minimal Signup (CI-1)' : 'Step 2 of 2 · Value Orientation (VO-1..3)'}
+        </div>
+        <p className="text-sm text-[#D1D5DB] leading-relaxed">
           {step === 1
             ? 'Rule CI-1: Signup asks only these three things. Everything else is requested progressively when relevant, with a clear reason.'
             : 'Rule VO-1: Two people with the same goal can want different things. Pick a starter archetype and nudge the weights—or finish immediately with Balanced Builder.'}
         </p>
-      </div>
+      </header>
 
       {step === 1 ? (
         <div className="space-y-4">
-          {/* 1. Who are you */}
-          <div className="rounded-xl bg-white border border-stone-200 p-3.5 space-y-2.5 shadow-sm">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
-              1. Who are you?
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your name"
-              className="w-full px-3 py-2 rounded-lg border border-stone-300 text-sm text-slate-900 focus:outline-none focus:border-emerald-700 bg-stone-50/50"
-            />
-          </div>
+          {/* 1. Who are you & 2. Where are you */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-white border-2 border-[#14161A] p-4 space-y-2.5">
+              <label
+                htmlFor="onboarding-name"
+                className="block text-xs font-mono font-bold uppercase tracking-wider text-[#14161A]"
+              >
+                1. Who are you?
+              </label>
+              <input
+                id="onboarding-name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-sm text-[#14161A] bg-[#F9F9F7]"
+              />
+            </div>
 
-          {/* 2. Where are you (Origin Location) */}
-          <div className="rounded-xl bg-white border border-stone-200 p-3.5 space-y-2.5 shadow-sm">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
-              2. Where are you currently based?
-            </label>
-            <select
-              value={originCountry}
-              onChange={(e) => setOriginCountry(e.target.value as DestinationId)}
-              className="w-full px-3 py-2 rounded-lg border border-stone-300 text-sm text-slate-900 bg-stone-50/50 focus:outline-none focus:border-emerald-700"
-            >
-              {DESTINATIONS.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.flag} {d.name} ({d.region})
-                </option>
-              ))}
-            </select>
+            <div className="bg-white border-2 border-[#14161A] p-4 space-y-2.5">
+              <label
+                htmlFor="onboarding-origin"
+                className="block text-xs font-mono font-bold uppercase tracking-wider text-[#14161A]"
+              >
+                2. Where are you currently based?
+              </label>
+              <select
+                id="onboarding-origin"
+                value={originCountry}
+                onChange={(e) => setOriginCountry(e.target.value as DestinationId)}
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-sm text-[#14161A] bg-[#F9F9F7]"
+              >
+                {DESTINATIONS.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.flag} {d.name} ({d.region})
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* 3. Where do you want to go (Starting Mode + Target Career & Destination) */}
-          <div className="rounded-xl bg-white border border-stone-200 p-3.5 space-y-3 shadow-sm">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+          <div className="bg-white border-2 border-[#14161A] p-4 sm:p-5 space-y-4">
+            <span className="block text-xs font-mono font-bold uppercase tracking-wider text-[#14161A]">
               3. Where do you want to go? (Starting Mode — K4)
-            </label>
+            </span>
 
-            {/* 3 Starting Modes */}
-            <div className="grid grid-cols-3 gap-1.5">
+            {/* 3 Starting Modes — 1 col on small phones, 3 cols on sm+ */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               {(
                 [
                   { mode: 'Builder', quote: '"I know my goal"' },
@@ -158,16 +169,16 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                   key={item.mode}
                   type="button"
                   onClick={() => setStartingMode(item.mode)}
-                  className={`p-2 rounded-lg border text-left transition-all ${
+                  className={`min-h-[52px] p-3 border-2 text-left transition-colors ${
                     startingMode === item.mode
-                      ? 'bg-emerald-950 text-white border-emerald-900 shadow-sm'
-                      : 'bg-stone-50 text-slate-700 border-stone-200 hover:bg-stone-100'
+                      ? 'bg-[#14161A] text-white border-[#D92B2B]'
+                      : 'bg-[#F9F9F7] text-[#14161A] border-[#D6D5CE] hover:border-[#14161A]'
                   }`}
                 >
-                  <div className="text-xs font-bold">{item.mode}</div>
+                  <div className="text-sm font-extrabold">{item.mode}</div>
                   <div
-                    className={`text-[10px] mt-0.5 ${
-                      startingMode === item.mode ? 'text-emerald-200' : 'text-slate-500'
+                    className={`text-xs mt-0.5 ${
+                      startingMode === item.mode ? 'text-[#D1D5DB]' : 'text-[#4B5563]'
                     }`}
                   >
                     {item.quote}
@@ -179,13 +190,17 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
             {startingMode === 'Builder' && (
               <div className="space-y-3 pt-1">
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                  <label
+                    htmlFor="onboarding-career"
+                    className="block text-xs font-semibold text-[#14161A] mb-1.5"
+                  >
                     Target Career Field (13 Seeded Fields + PI-8 Test)
                   </label>
                   <select
+                    id="onboarding-career"
                     value={goalCareerId}
                     onChange={(e) => setGoalCareerId(e.target.value as CareerFieldId)}
-                    className="w-full px-3 py-2 rounded-lg border border-stone-300 text-xs font-medium text-slate-900 bg-stone-50/50"
+                    className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-sm font-medium text-[#14161A] bg-[#F9F9F7]"
                   >
                     {CAREER_FIELDS.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -197,20 +212,20 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
 
                 {goalCareerId === 'engineering' && (
                   <div>
-                    <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                    <span className="block text-xs font-semibold text-[#14161A] mb-1.5">
                       Engineering Discipline
-                    </label>
-                    <div className="grid grid-cols-2 gap-1.5">
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {(['Petroleum', 'Civil', 'Electrical/Electronics', 'Mechanical'] as const).map(
                         (track) => (
                           <button
                             key={track}
                             type="button"
                             onClick={() => setEngineeringTrack(track)}
-                            className={`py-1.5 px-2.5 rounded-lg border text-xs font-medium text-left ${
+                            className={`min-h-[44px] py-2 px-3 border text-xs font-mono font-bold text-left ${
                               engineeringTrack === track
-                                ? 'bg-emerald-50 border-emerald-700 text-emerald-950 font-semibold'
-                                : 'bg-white border-stone-200 text-slate-700'
+                                ? 'bg-[#EFF6FF] border-[#1D4ED8] text-[#1D4ED8]'
+                                : 'bg-white border-[#D6D5CE] text-[#14161A]'
                             }`}
                           >
                             {track}
@@ -223,14 +238,18 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
 
                 {goalCareerId === 'custom-unsupported' && (
                   <div>
-                    <label className="block text-[11px] font-semibold text-amber-800 mb-1">
+                    <label
+                      htmlFor="onboarding-custom-goal"
+                      className="block text-xs font-semibold text-amber-900 mb-1.5"
+                    >
                       Enter Custom Unlisted Career (Demonstrates PI-8 Honest Fallback)
                     </label>
                     <input
+                      id="onboarding-custom-goal"
                       type="text"
                       value={customGoalText}
                       onChange={(e) => setCustomGoalText(e.target.value)}
-                      className="w-full px-3 py-1.5 rounded-lg border border-amber-300 bg-amber-50/40 text-xs text-slate-900"
+                      className="min-h-[44px] w-full px-3 py-2 border-2 border-amber-500 bg-amber-50 text-sm text-[#14161A]"
                     />
                   </div>
                 )}
@@ -238,11 +257,11 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
             )}
 
             {startingMode === 'Decider' && (
-              <div className="space-y-1.5 pt-1">
-                <label className="block text-[11px] font-semibold text-slate-600">
+              <div className="space-y-2 pt-1">
+                <span className="block text-xs font-semibold text-[#14161A]">
                   Pick 2–3 Career Ideas to Compare Side-by-Side (SM-2):
-                </label>
-                <div className="max-h-44 overflow-y-auto space-y-1 pr-1">
+                </span>
+                <div className="max-h-60 overflow-y-auto space-y-1.5 pr-1">
                   {CAREER_FIELDS.filter((c) => c.id !== 'custom-unsupported').map((c) => {
                     const selected = deciderIds.includes(c.id);
                     return (
@@ -250,14 +269,14 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                         key={c.id}
                         type="button"
                         onClick={() => toggleDeciderCandidate(c.id)}
-                        className={`w-full text-left px-2.5 py-1.5 rounded-lg border text-xs flex items-center justify-between ${
+                        className={`min-h-[44px] w-full text-left px-3 py-2 border text-xs sm:text-sm flex items-center justify-between gap-2 ${
                           selected
-                            ? 'bg-emerald-50 border-emerald-700 text-emerald-950 font-semibold'
-                            : 'bg-white border-stone-200 text-slate-700'
+                            ? 'bg-[#EFF6FF] border-[#1D4ED8] text-[#1D4ED8] font-bold'
+                            : 'bg-white border-[#D6D5CE] text-[#14161A]'
                         }`}
                       >
                         <span className="truncate">{c.title}</span>
-                        {selected && <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />}
+                        {selected && <Check className="w-4 h-4 text-[#1D4ED8] shrink-0" />}
                       </button>
                     );
                   })}
@@ -266,20 +285,24 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
             )}
 
             {startingMode === 'Explorer' && (
-              <div className="rounded-lg bg-stone-50 border border-stone-200 p-2.5 text-xs text-slate-600">
-                <strong className="text-slate-800">Explorer Mode (SM-1 &amp; K3):</strong> After signup, North will guide you through a short advisory discovery across all 13 career fields. You always keep 100% control of the destination.
+              <div className="bg-[#F2F1EC] border border-[#14161A] p-3 text-sm text-[#4B5563]">
+                <strong className="text-[#14161A]">Explorer Mode (SM-1 &amp; K3):</strong> After signup, North will guide you through a short advisory discovery across all 13 career fields. You always keep 100% control of the destination.
               </div>
             )}
 
             {/* Target Destination Country / Hub */}
-            <div className="pt-1 border-t border-stone-100 space-y-2">
-              <label className="block text-[11px] font-semibold text-slate-600">
+            <div className="pt-3 border-t border-[#D6D5CE] space-y-2.5">
+              <label
+                htmlFor="onboarding-destination"
+                className="block text-xs font-semibold text-[#14161A]"
+              >
                 Target Destination Country or Hub (PI-1)
               </label>
               <select
+                id="onboarding-destination"
                 value={destinationId}
                 onChange={(e) => setDestinationId(e.target.value as DestinationId)}
-                className="w-full px-3 py-2 rounded-lg border border-stone-300 text-xs font-medium text-slate-900 bg-stone-50/50"
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-sm font-medium text-[#14161A] bg-[#F9F9F7]"
               >
                 {DESTINATIONS.map((d) => (
                   <option key={d.id} value={d.id}>
@@ -293,16 +316,16 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                 value={institutionOrCity}
                 onChange={(e) => setInstitutionOrCity(e.target.value)}
                 placeholder="Optional city, state, or institution (PI-7 specificity)"
-                className="w-full px-3 py-1.5 rounded-lg border border-stone-200 text-xs text-slate-800 bg-stone-50/40"
+                className="min-h-[44px] w-full px-3 py-2 border border-[#14161A] text-sm text-[#14161A] bg-[#F9F9F7]"
               />
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2.5">
             <button
               type="button"
               onClick={handleFinish}
-              className="px-3 py-2.5 rounded-xl border border-stone-300 bg-white text-slate-700 text-xs font-semibold hover:bg-stone-100 transition-colors"
+              className="min-h-[44px] px-4 py-2.5 border-2 border-[#14161A] bg-white text-[#14161A] text-xs font-mono font-bold uppercase hover:bg-[#F2F1EC] transition-colors"
               title="VO-1: A user can finish onboarding without choosing; Balanced Builder default applies."
             >
               Skip Step 2 (Use Default)
@@ -310,21 +333,21 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
             <button
               type="button"
               onClick={() => setStep(2)}
-              className="flex-1 py-2.5 px-4 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5"
+              className="min-h-[44px] flex-1 py-2.5 px-5 bg-[#14161A] hover:bg-[#D92B2B] text-white text-xs font-mono font-bold uppercase transition-colors flex items-center justify-center gap-2"
             >
               <span>Next: Value Orientation</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 shrink-0" />
             </button>
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {/* 4 Starter Archetypes (VO-1) */}
-          <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+          <div className="space-y-2.5">
+            <span className="block text-xs font-mono font-bold uppercase tracking-wider text-[#14161A]">
               1. Pick a Starter Archetype (VO-1)
-            </label>
-            <div className="grid grid-cols-1 gap-2">
+            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {(
                 ['Balanced Builder', 'Maximizer', 'Stability Seeker', 'Mission-Driven'] as ArchetypeName[]
               ).map((arch) => {
@@ -338,29 +361,29 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                       setArchetype(arch);
                       setSliders({ orientation: 0, riskAppetite: 0, timeHorizon: 0 });
                     }}
-                    className={`w-full text-left p-3 rounded-xl border transition-all ${
+                    className={`min-h-[64px] w-full text-left p-3.5 border-2 transition-colors ${
                       isSelected
-                        ? 'bg-emerald-950 text-white border-emerald-900 shadow-md'
-                        : 'bg-white text-slate-800 border-stone-200 hover:border-stone-300'
+                        ? 'bg-[#14161A] text-white border-[#D92B2B]'
+                        : 'bg-white text-[#14161A] border-[#D6D5CE] hover:border-[#14161A]'
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-sm font-extrabold">
                         {arch} {arch === 'Balanced Builder' && '(Default)'}
                       </span>
                       <span
-                        className={`text-[10px] px-2 py-0.5 rounded-full ${
+                        className={`text-[11px] font-mono px-2 py-0.5 ${
                           isSelected
-                            ? 'bg-emerald-800 text-emerald-100'
-                            : 'bg-stone-100 text-slate-600'
+                            ? 'bg-[#D92B2B] text-white'
+                            : 'bg-[#F2F1EC] text-[#4B5563]'
                         }`}
                       >
                         {meta.tagline}
                       </span>
                     </div>
                     <p
-                      className={`text-[11px] mt-1 leading-relaxed ${
-                        isSelected ? 'text-stone-200' : 'text-slate-600'
+                      className={`text-xs mt-1.5 leading-relaxed ${
+                        isSelected ? 'text-[#D1D5DB]' : 'text-[#4B5563]'
                       }`}
                     >
                       {meta.optimizesFor}
@@ -372,16 +395,16 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
           </div>
 
           {/* 3 Bounded Sliders (VO-2, VO-3) */}
-          <div className="rounded-xl bg-white border border-stone-200 p-3.5 space-y-3 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-                <Sliders className="w-3.5 h-3.5 text-emerald-700" />
+          <div className="bg-white border-2 border-[#14161A] p-4 sm:p-5 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-sm font-extrabold text-[#14161A]">
+                <Sliders className="w-4 h-4 text-[#1D4ED8] shrink-0" />
                 <span>2. Nudge Weights Underneath (VO-2 &amp; VO-3)</span>
               </div>
               <button
                 type="button"
                 onClick={() => setSliders({ orientation: 0, riskAppetite: 0, timeHorizon: 0 })}
-                className="text-[11px] text-emerald-800 hover:underline font-medium"
+                className="min-h-[44px] px-3 text-xs font-mono font-bold text-[#1D4ED8] hover:underline"
               >
                 Reset to {archetype} Default
               </button>
@@ -410,9 +433,9 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
               ] as const
             ).map((s) => (
               <div key={s.key} className="space-y-1">
-                <div className="flex justify-between text-[11px]">
-                  <span className="font-semibold text-slate-700">{s.label}</span>
-                  <span className="font-mono text-slate-500">
+                <div className="flex justify-between gap-2 text-xs sm:text-sm">
+                  <span className="font-semibold text-[#14161A]">{s.label}</span>
+                  <span className="font-mono font-bold text-[#1D4ED8]">
                     {sliders[s.key] > 0 ? `+${sliders[s.key]}` : sliders[s.key]}
                   </span>
                 </div>
@@ -425,56 +448,56 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                   onChange={(e) =>
                     setSliders({ ...sliders, [s.key]: Number(e.target.value) })
                   }
-                  className="w-full accent-emerald-800 cursor-pointer"
+                  className="w-full cursor-pointer"
                 />
-                <div className="flex justify-between text-[10px] text-slate-400">
+                <div className="flex justify-between gap-2 text-[11px] font-mono text-[#4B5563]">
                   <span>{s.left}</span>
-                  <span>Archetype Baseline (0)</span>
-                  <span>{s.right}</span>
+                  <span className="hidden sm:inline">Archetype Baseline (0)</span>
+                  <span className="text-right">{s.right}</span>
                 </div>
               </div>
             ))}
 
             {/* Plain-words explanation & live stored weights (VO-6, VO-7) */}
-            <div className="rounded-lg bg-stone-50 border border-stone-200 p-2.5 space-y-2">
-              <div className="flex items-center gap-1 text-[11px] font-semibold text-emerald-900">
-                <Sparkles className="w-3.5 h-3.5" />
+            <div className="bg-[#F2F1EC] border border-[#14161A] p-3.5 space-y-2.5">
+              <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-[#1D4ED8]">
+                <Sparkles className="w-4 h-4 shrink-0" />
                 <span>How this affects your scores (Rule VO-7):</span>
               </div>
-              <p className="text-[11px] text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#4B5563] leading-relaxed">
                 {ARCHETYPE_DESCRIPTIONS[archetype].plainExplanation}
               </p>
-              <div className="grid grid-cols-4 gap-1 pt-1 text-[10px] font-mono text-slate-600">
-                <div className="bg-white px-1.5 py-1 rounded border border-stone-200">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-[11px] font-mono text-[#14161A]">
+                <div className="bg-white px-2.5 py-1.5 border border-[#D6D5CE]">
                   Gaps: +{liveWeights.gapsClosed.toFixed(2)}
                 </div>
-                <div className="bg-white px-1.5 py-1 rounded border border-stone-200">
+                <div className="bg-white px-2.5 py-1.5 border border-[#D6D5CE]">
                   Halo: +{liveWeights.credibility.toFixed(2)}
                 </div>
-                <div className="bg-white px-1.5 py-1 rounded border border-stone-200">
+                <div className="bg-white px-2.5 py-1.5 border border-[#D6D5CE]">
                   Fund: +{liveWeights.funding.toFixed(2)}
                 </div>
-                <div className="bg-white px-1.5 py-1 rounded border border-stone-200">
+                <div className="bg-white px-2.5 py-1.5 border border-[#D6D5CE]">
                   Disrupt: −{liveWeights.disruptionCost.toFixed(2)}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2.5">
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="px-3.5 py-2.5 rounded-xl border border-stone-300 bg-white text-slate-700 text-xs font-semibold hover:bg-stone-100"
+              className="min-h-[44px] px-4 py-2.5 border-2 border-[#14161A] bg-white text-[#14161A] text-xs font-mono font-bold uppercase hover:bg-[#F2F1EC]"
             >
               Back
             </button>
             <button
               type="button"
               onClick={handleFinish}
-              className="flex-1 py-2.5 px-4 rounded-xl bg-emerald-900 text-white text-xs font-semibold hover:bg-emerald-800 transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+              className="min-h-[44px] flex-1 py-2.5 px-5 bg-[#D92B2B] hover:bg-[#B91C1C] text-white text-xs font-mono font-bold uppercase transition-colors flex items-center justify-center gap-2"
             >
-              <Compass className="w-4 h-4" />
+              <Compass className="w-4 h-4 shrink-0" />
               <span>Save Career Identity &amp; Launch Navigation</span>
             </button>
           </div>

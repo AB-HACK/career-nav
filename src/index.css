@@ -80,3 +80,21 @@ dialog::backdrop {
     scroll-behavior: auto !important;
   }
 }
+
+/* Touch-friendly range slider thumbs */
+input[type="range"] {
+  min-height: 44px;
+  touch-action: pan-y;
+  accent-color: #1D4ED8;
+}
+
+@media (pointer: coarse) {
+  input[type="range"]::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+  }
+}

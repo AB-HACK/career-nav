@@ -39,57 +39,55 @@ export const ExplorerDeciderView: React.FC = () => {
       : validCareerFields.filter((c) => c.workStyleTags.includes(selectedWorkTag));
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="space-y-6">
       {/* Header Banner */}
-      <div className="rounded-2xl bg-[#0F172A] text-white p-4 space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-400">
-            Engine 2 · Career Discovery (SM-1, SM-2, SM-4)
-          </span>
-        </div>
-        <h2 className="text-base font-bold">
+      <header className="bg-[#14161A] text-[#F9F9F7] border-2 border-[#14161A] p-4 sm:p-6 space-y-3">
+        <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
           {modeTab === 'Explorer'
             ? 'Explorer Mode: Advisory Career Discovery'
             : 'Decider Mode: Side-by-Side Pathway Comparison'}
-        </h2>
-        <p className="text-xs text-slate-300 leading-relaxed">
-          <strong className="text-emerald-300">Keynote K3 (Non-Negotiable):</strong> Assessments and comparisons are advisory information, never a verdict. We never tell a user who wants Dermatology that Public Health suits them better. You control the destination.
+        </h1>
+        <div className="text-[11px] font-mono uppercase tracking-wider text-[#93C5FD]">
+          Engine 2 · Career Discovery (SM-1, SM-2, SM-4)
+        </div>
+        <p className="text-sm text-[#D1D5DB] leading-relaxed">
+          <strong className="text-white">Keynote K3 (Non-Negotiable):</strong> Assessments and comparisons are advisory information, never a verdict. We never tell a user who wants Dermatology that Public Health suits them better. You control the destination.
         </p>
 
-        <div className="grid grid-cols-2 gap-2 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
           <button
             onClick={() => setModeTab('Explorer')}
-            className={`py-1.5 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 ${
+            className={`min-h-[44px] py-2.5 px-4 text-xs font-mono font-bold uppercase flex items-center justify-center gap-2 border transition-colors ${
               modeTab === 'Explorer'
-                ? 'bg-emerald-500 text-slate-950'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                ? 'bg-[#D92B2B] text-white border-[#D92B2B]'
+                : 'bg-[#1F242D] text-[#D1D5DB] border-[#323846] hover:text-white'
             }`}
           >
-            <Compass className="w-3.5 h-3.5" />
+            <Compass className="w-4 h-4 shrink-0" />
             <span>Explorer (SM-1)</span>
           </button>
           <button
             onClick={() => setModeTab('Decider')}
-            className={`py-1.5 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 ${
+            className={`min-h-[44px] py-2.5 px-4 text-xs font-mono font-bold uppercase flex items-center justify-center gap-2 border transition-colors ${
               modeTab === 'Decider'
-                ? 'bg-emerald-500 text-slate-950'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                ? 'bg-[#D92B2B] text-white border-[#D92B2B]'
+                : 'bg-[#1F242D] text-[#D1D5DB] border-[#323846] hover:text-white'
             }`}
           >
-            <Columns className="w-3.5 h-3.5" />
+            <Columns className="w-4 h-4 shrink-0" />
             <span>Decider Compare (SM-2)</span>
           </button>
         </div>
-      </div>
+      </header>
 
       {modeTab === 'Explorer' ? (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {/* Advisory Self-Reflection Filter */}
-          <div className="rounded-xl bg-white border border-stone-200 p-3.5 space-y-2 shadow-sm">
-            <label className="block text-xs font-bold text-slate-800">
+          <div className="bg-white border-2 border-[#14161A] p-4 space-y-2.5">
+            <span className="block text-sm font-extrabold text-[#14161A]">
               Filter by Day-to-Day Work Style (Advisory Signal — Never Restricts Choice)
-            </label>
-            <div className="flex flex-wrap gap-1.5">
+            </span>
+            <div className="flex flex-wrap gap-2">
               {[
                 { tag: 'all', label: 'All 13 Fields' },
                 { tag: 'clinical', label: 'Clinical & Patient Care' },
@@ -101,10 +99,10 @@ export const ExplorerDeciderView: React.FC = () => {
                 <button
                   key={item.tag}
                   onClick={() => setSelectedWorkTag(item.tag)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors ${
+                  className={`min-h-[44px] px-3.5 py-2 text-xs font-mono font-bold border transition-colors ${
                     selectedWorkTag === item.tag
-                      ? 'bg-slate-900 text-white border-slate-900'
-                      : 'bg-stone-50 text-slate-700 border-stone-200 hover:bg-stone-100'
+                      ? 'bg-[#14161A] text-white border-[#14161A]'
+                      : 'bg-[#F9F9F7] text-[#14161A] border-[#D6D5CE] hover:border-[#14161A]'
                   }`}
                 >
                   {item.label}
@@ -114,7 +112,7 @@ export const ExplorerDeciderView: React.FC = () => {
           </div>
 
           {/* Career Cards */}
-          <div className="space-y-2.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredFields.map((career) => {
               const samplePathway = getPathwayForCareerAndDestination(
                 career.id,
@@ -125,46 +123,52 @@ export const ExplorerDeciderView: React.FC = () => {
               return (
                 <div
                   key={career.id}
-                  className="rounded-xl bg-white border border-stone-200 p-3.5 space-y-2.5 shadow-sm"
+                  className="bg-white border-2 border-[#14161A] p-4 space-y-3 flex flex-col justify-between"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-800">
-                        {career.category}
+                  <div className="space-y-2.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <h2 className="text-base font-extrabold text-[#14161A]">
+                          {career.title}
+                        </h2>
+                        <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#1D4ED8] block mt-0.5">
+                          {career.category}
+                        </span>
+                      </div>
+                      <span className="text-xs font-mono bg-[#F2F1EC] border border-[#14161A] px-2.5 py-1 text-[#14161A] font-bold shrink-0">
+                        ~{samplePathway.estimatedMonths}m pathway
                       </span>
-                      <h3 className="text-sm font-bold text-slate-900">{career.title}</h3>
                     </div>
-                    <span className="text-[11px] font-mono bg-stone-100 px-2 py-0.5 rounded text-slate-700 shrink-0">
-                      ~{samplePathway.estimatedMonths}m pathway
-                    </span>
+
+                    <p className="text-sm text-[#4B5563] leading-relaxed">
+                      {career.description}
+                    </p>
+
+                    <div className="text-xs text-[#4B5563] bg-[#F2F1EC] p-2.5 border border-[#D6D5CE]">
+                      <strong className="text-[#14161A]">
+                        In {destinationMeta.flag} {destinationMeta.name}:
+                      </strong>{' '}
+                      Regulated/benchmarked via {samplePathway.regulatingBody}.
+                    </div>
                   </div>
 
-                  <p className="text-xs text-slate-600 leading-relaxed">{career.description}</p>
-
-                  <div className="text-[11px] text-slate-500 bg-stone-50 p-2 rounded-lg border border-stone-200/70">
-                    <strong className="text-slate-700">
-                      In {destinationMeta.flag} {destinationMeta.name}:
-                    </strong>{' '}
-                    Regulated/benchmarked via {samplePathway.regulatingBody}.
-                  </div>
-
-                  <div className="flex items-center gap-2 pt-1">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
                     <button
                       onClick={() => toggleCompare(career.id)}
-                      className={`px-2.5 py-1.5 rounded-lg border text-xs font-medium ${
+                      className={`min-h-[44px] px-3 py-2 border-2 text-xs font-mono font-bold ${
                         isInCompare
-                          ? 'bg-emerald-50 border-emerald-700 text-emerald-900'
-                          : 'bg-white border-stone-300 text-slate-700 hover:bg-stone-50'
+                          ? 'bg-[#EFF6FF] border-[#1D4ED8] text-[#1D4ED8]'
+                          : 'bg-white border-[#14161A] text-[#14161A] hover:bg-[#F2F1EC]'
                       }`}
                     >
                       {isInCompare ? '✓ In Decider Compare' : '+ Add to Compare'}
                     </button>
                     <button
                       onClick={() => handOffToBuilderMode(career.id)}
-                      className="flex-1 py-1.5 px-3 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 flex items-center justify-center gap-1"
+                      className="min-h-[44px] flex-1 py-2 px-3 bg-[#14161A] hover:bg-[#D92B2B] text-white text-xs font-mono font-bold uppercase flex items-center justify-center gap-1.5 transition-colors"
                     >
                       <span>Choose &amp; Build Roadmap (SM-6)</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <ArrowRight className="w-4 h-4 shrink-0" />
                     </button>
                   </div>
                 </div>
@@ -173,14 +177,14 @@ export const ExplorerDeciderView: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {/* Decider Selector */}
-          <div className="rounded-xl bg-white border border-stone-200 p-3.5 space-y-2 shadow-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-800">
+          <div className="bg-white border-2 border-[#14161A] p-4 space-y-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="text-sm font-extrabold text-[#14161A]">
                 Comparing {compareIds.length} Pathways in {destinationMeta.flag} {destinationMeta.name}
               </span>
-              <span className="text-[11px] text-slate-500">Pick up to 3</span>
+              <span className="text-xs font-mono text-[#4B5563]">Pick up to 3</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {validCareerFields.map((c) => {
@@ -189,10 +193,10 @@ export const ExplorerDeciderView: React.FC = () => {
                   <button
                     key={c.id}
                     onClick={() => toggleCompare(c.id)}
-                    className={`px-2 py-1 rounded-md text-[11px] font-medium border transition-colors ${
+                    className={`min-h-[44px] px-3 py-1.5 text-xs font-mono font-bold border transition-colors ${
                       active
-                        ? 'bg-emerald-900 text-white border-emerald-950'
-                        : 'bg-stone-50 text-slate-600 border-stone-200 hover:bg-stone-100'
+                        ? 'bg-[#1D4ED8] text-white border-[#1D4ED8]'
+                        : 'bg-[#F9F9F7] text-[#14161A] border-[#D6D5CE] hover:border-[#14161A]'
                     }`}
                   >
                     {c.shortTitle}
@@ -203,7 +207,7 @@ export const ExplorerDeciderView: React.FC = () => {
           </div>
 
           {/* Side-by-Side Comparison Cards */}
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {compareIds.map((cId) => {
               const pw = getPathwayForCareerAndDestination(cId, user.destinationId);
               const competitionDim = pw.dimensions.find((d) => d.dimension === 'Competition');
@@ -213,43 +217,47 @@ export const ExplorerDeciderView: React.FC = () => {
               return (
                 <div
                   key={cId}
-                  className="rounded-xl bg-white border border-stone-200 p-3.5 space-y-2.5 shadow-sm"
+                  className="bg-white border-2 border-[#14161A] p-4 space-y-3 flex flex-col justify-between"
                 >
-                  <div className="flex items-start justify-between border-b border-stone-100 pb-2">
-                    <div>
-                      <h4 className="text-sm font-bold text-slate-900">{pw.careerTitle}</h4>
-                      <p className="text-[11px] text-slate-500">{pw.regulatingBody}</p>
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-2 border-b-2 border-[#14161A] pb-2.5">
+                      <div className="min-w-0">
+                        <h3 className="text-base font-extrabold text-[#14161A]">
+                          {pw.careerTitle}
+                        </h3>
+                        <p className="text-xs text-[#4B5563]">{pw.regulatingBody}</p>
+                      </div>
+                      <span className="px-2.5 py-1 bg-[#EFF6FF] text-[#1D4ED8] border border-[#1D4ED8] text-xs font-mono font-bold shrink-0">
+                        ~{pw.estimatedMonths} mos
+                      </span>
                     </div>
-                    <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-mono font-semibold">
-                      ~{pw.estimatedMonths} mos
-                    </span>
-                  </div>
 
-                  <div className="space-y-1.5 text-xs">
-                    <div>
-                      <span className="font-semibold text-slate-800">Primary Licensing Gate: </span>
-                      <span className="text-slate-600">{pw.requirements[1]?.title}</span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-slate-800">Competition Reality: </span>
-                      <span className="text-slate-600">{competitionDim?.specificChallenge}</span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-slate-800">Financial Dimension: </span>
-                      <span className="text-slate-600">{financeDim?.specificChallenge}</span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-slate-800">Key Bottleneck: </span>
-                      <span className="text-slate-600">{bottleneckDim?.specificChallenge}</span>
+                    <div className="space-y-2 text-xs sm:text-sm">
+                      <div>
+                        <span className="font-bold text-[#14161A]">Primary Licensing Gate: </span>
+                        <span className="text-[#4B5563]">{pw.requirements[1]?.title}</span>
+                      </div>
+                      <div>
+                        <span className="font-bold text-[#14161A]">Competition Reality: </span>
+                        <span className="text-[#4B5563]">{competitionDim?.specificChallenge}</span>
+                      </div>
+                      <div>
+                        <span className="font-bold text-[#14161A]">Financial Dimension: </span>
+                        <span className="text-[#4B5563]">{financeDim?.specificChallenge}</span>
+                      </div>
+                      <div>
+                        <span className="font-bold text-[#14161A]">Key Bottleneck: </span>
+                        <span className="text-[#4B5563]">{bottleneckDim?.specificChallenge}</span>
+                      </div>
                     </div>
                   </div>
 
                   <button
                     onClick={() => handOffToBuilderMode(cId)}
-                    className="w-full py-2 px-3 rounded-lg bg-emerald-900 text-white text-xs font-semibold hover:bg-emerald-800 transition-colors flex items-center justify-center gap-1.5"
+                    className="min-h-[44px] w-full py-2.5 px-3 bg-[#14161A] hover:bg-[#D92B2B] text-white text-xs font-mono font-bold uppercase transition-colors flex items-center justify-center gap-1.5"
                   >
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Commit to {pw.careerTitle} (Seamless Builder Handoff — SM-6)</span>
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>Commit to {pw.careerTitle} (SM-6)</span>
                   </button>
                 </div>
               );
@@ -258,10 +266,10 @@ export const ExplorerDeciderView: React.FC = () => {
         </div>
       )}
 
-      <div className="rounded-xl bg-stone-100 border border-stone-200 p-3 flex items-center gap-2 text-xs text-slate-600">
-        <ShieldCheck className="w-4 h-4 text-emerald-800 shrink-0" />
+      <div className="bg-[#F2F1EC] border border-[#14161A] p-3.5 flex items-center gap-2.5 text-xs sm:text-sm text-[#4B5563]">
+        <ShieldCheck className="w-4 h-4 text-[#1D4ED8] shrink-0" />
         <span>
-          <strong>Rule SM-6 Verified:</strong> Selecting any career above hands your existing profile and Value Orientation directly into the Builder flow with zero data re-entry.
+          <strong className="text-[#14161A]">Rule SM-6 Verified:</strong> Selecting any career above hands your existing profile and Value Orientation directly into the Builder flow with zero data re-entry.
         </span>
       </div>
     </div>

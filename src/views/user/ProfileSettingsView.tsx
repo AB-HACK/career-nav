@@ -78,189 +78,251 @@ export const ProfileSettingsView: React.FC = () => {
   };
 
   return (
-    <div className="p-3.5 space-y-4">
+    <div className="space-y-6">
       {/* Header */}
-      <section className="rounded-2xl bg-[#0F172A] text-white p-4 space-y-2 shadow-md">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-emerald-400">
-            <UserCheck className="w-3.5 h-3.5" />
-            <span>Engine 1 · Living Career Identity &amp; Settings (CI-3..7, VO-4)</span>
-          </div>
+      <header className="bg-[#14161A] text-[#F9F9F7] border-2 border-[#14161A] p-4 sm:p-6 space-y-2">
+        <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+          {user.name || 'Career Navigator'}
+        </h1>
+        <div className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-[#93C5FD]">
+          <UserCheck className="w-3.5 h-3.5 shrink-0" />
+          <span>Engine 1 · Living Career Identity &amp; Settings (CI-3..7, VO-4)</span>
         </div>
-        <h2 className="text-base font-bold">{user.name || 'Career Navigator'}</h2>
-        <p className="text-xs text-slate-300 leading-relaxed">
+        <p className="text-sm text-[#D1D5DB] leading-relaxed pt-1">
           Keynote K5 &amp; K6: Your Career Identity learns from what you complete and tracks Declared vs. Evidenced proof. Revisit your Value Orientation weights anytime.
         </p>
-      </section>
+      </header>
 
       {/* Progressive Profile Prompt if any remain */}
       <ProgressivePromptCard />
 
-      {/* =====================================================================
-          VALUE ORIENTATION EDITOR IN SETTINGS (Rules VO-4, VO-5, VO-6)
-          Changes re-score opportunities and re-rank priorities; never changes goal or gaps.
-         ===================================================================== */}
-      <section className="rounded-2xl bg-white border border-stone-200 p-3.5 space-y-3 shadow-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-800">
-            <Sliders className="w-3.5 h-3.5 text-emerald-800" />
-            <span>Value Orientation Weighting Layer (VO-4 &amp; VO-5)</span>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
+        {/* =====================================================================
+            VALUE ORIENTATION EDITOR IN SETTINGS (Rules VO-4, VO-5, VO-6)
+           ===================================================================== */}
+        <section className="bg-white border-2 border-[#14161A] p-4 sm:p-5 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#D6D5CE] pb-3">
+            <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-[#14161A]">
+              <Sliders className="w-4 h-4 text-[#1D4ED8] shrink-0" />
+              <h2>Value Orientation Weighting Layer (VO-4 &amp; VO-5)</h2>
+            </div>
+            <span className="text-xs font-mono px-2.5 py-1 bg-[#EFF6FF] text-[#1D4ED8] font-bold border border-[#1D4ED8]">
+              {valueOrientation.archetype}
+            </span>
           </div>
-          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-900 font-semibold border border-emerald-200">
-            {valueOrientation.archetype}
-          </span>
-        </div>
 
-        <p className="text-xs text-slate-600 leading-relaxed">
-          Rule VO-5: Changing your orientation updates Leverage scores and task priorities immediately, while leaving your career goal and pathway requirements 100% untouched.
-        </p>
+          <p className="text-sm text-[#4B5563] leading-relaxed">
+            Rule VO-5: Changing your orientation updates Leverage scores and task priorities immediately, while leaving your career goal and pathway requirements 100% untouched.
+          </p>
 
-        {/* 4 Archetype Buttons */}
-        <div className="grid grid-cols-2 gap-1.5">
-          {(
-            ['Maximizer', 'Balanced Builder', 'Stability Seeker', 'Mission-Driven'] as ArchetypeName[]
-          ).map((arch) => {
-            const active = valueOrientation.archetype === arch;
-            return (
-              <button
-                key={arch}
-                onClick={() =>
-                  setValueOrientation(arch, {
-                    orientation: 0,
-                    riskAppetite: 0,
-                    timeHorizon: 0,
-                  })
-                }
-                className={`p-2.5 rounded-xl border text-left transition-all ${
-                  active
-                    ? 'bg-emerald-950 text-white border-emerald-900 shadow-sm'
-                    : 'bg-stone-50 text-slate-700 border-stone-200 hover:bg-stone-100'
-                }`}
-              >
-                <div className="text-xs font-bold">{arch}</div>
-                <div
-                  className={`text-[10px] mt-0.5 line-clamp-1 ${
-                    active ? 'text-emerald-200' : 'text-slate-500'
+          {/* 4 Archetype Buttons */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {(
+              ['Maximizer', 'Balanced Builder', 'Stability Seeker', 'Mission-Driven'] as ArchetypeName[]
+            ).map((arch) => {
+              const active = valueOrientation.archetype === arch;
+              return (
+                <button
+                  key={arch}
+                  onClick={() =>
+                    setValueOrientation(arch, {
+                      orientation: 0,
+                      riskAppetite: 0,
+                      timeHorizon: 0,
+                    })
+                  }
+                  className={`min-h-[52px] p-3 border-2 text-left transition-colors ${
+                    active
+                      ? 'bg-[#14161A] text-white border-[#D92B2B]'
+                      : 'bg-[#F9F9F7] text-[#14161A] border-[#D6D5CE] hover:border-[#14161A]'
                   }`}
                 >
-                  {ARCHETYPE_DESCRIPTIONS[arch].tagline}
-                </div>
-              </button>
-            );
-          })}
-        </div>
+                  <div className="text-sm font-bold">{arch}</div>
+                  <div
+                    className={`text-xs mt-0.5 line-clamp-1 ${
+                      active ? 'text-[#D1D5DB]' : 'text-[#4B5563]'
+                    }`}
+                  >
+                    {ARCHETYPE_DESCRIPTIONS[arch].tagline}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
 
-        {/* 3 Sliders */}
-        <div className="space-y-2.5 pt-2 border-t border-stone-100">
-          {(
-            [
-              {
-                key: 'orientation',
-                label: 'Orientation (Security ↔ Prestige/Impact)',
-              },
-              {
-                key: 'riskAppetite',
-                label: 'Risk Appetite (Low Disruption ↔ High Ceiling)',
-              },
-              {
-                key: 'timeHorizon',
-                label: 'Time Horizon (Immediate ↔ Long-Term)',
-              },
-            ] as const
-          ).map((s) => (
-            <div key={s.key} className="space-y-1">
-              <div className="flex justify-between text-[11px]">
-                <span className="font-medium text-slate-700">{s.label}</span>
-                <span className="font-mono font-bold text-slate-800">
-                  {valueOrientation.sliders[s.key] > 0
-                    ? `+${valueOrientation.sliders[s.key]}`
-                    : valueOrientation.sliders[s.key]}
-                </span>
+          {/* 3 Sliders */}
+          <div className="space-y-3 pt-2 border-t border-[#D6D5CE]">
+            {(
+              [
+                {
+                  key: 'orientation',
+                  label: 'Orientation (Security ↔ Prestige/Impact)',
+                },
+                {
+                  key: 'riskAppetite',
+                  label: 'Risk Appetite (Low Disruption ↔ High Ceiling)',
+                },
+                {
+                  key: 'timeHorizon',
+                  label: 'Time Horizon (Immediate ↔ Long-Term)',
+                },
+              ] as const
+            ).map((s) => (
+              <div key={s.key} className="space-y-1">
+                <div className="flex justify-between gap-2 text-xs sm:text-sm">
+                  <span className="font-semibold text-[#14161A]">{s.label}</span>
+                  <span className="font-mono font-bold text-[#1D4ED8] shrink-0">
+                    {valueOrientation.sliders[s.key] > 0
+                      ? `+${valueOrientation.sliders[s.key]}`
+                      : valueOrientation.sliders[s.key]}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={-2}
+                  max={2}
+                  step={1}
+                  value={valueOrientation.sliders[s.key]}
+                  onChange={(e) =>
+                    setValueOrientation(valueOrientation.archetype, {
+                      ...valueOrientation.sliders,
+                      [s.key]: Number(e.target.value),
+                    })
+                  }
+                  className="w-full cursor-pointer"
+                />
               </div>
+            ))}
+          </div>
+
+          {/* Active Weight Readout */}
+          <div className="bg-[#F2F1EC] border border-[#14161A] p-3 text-xs font-mono text-[#14161A] grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+            <div>Gaps Closed: +{valueOrientation.weights.gapsClosed.toFixed(2)}</div>
+            <div>Halo/Credibility: +{valueOrientation.weights.credibility.toFixed(2)}</div>
+            <div>Funding: +{valueOrientation.weights.funding.toFixed(2)}</div>
+            <div>Mentor/Net: +{valueOrientation.weights.networkAndMentor.toFixed(2)}</div>
+            <div>Impact Fit: +{valueOrientation.weights.impactAlignment.toFixed(2)}</div>
+            <div>Disruption Cost: −{valueOrientation.weights.disruptionCost.toFixed(2)}</div>
+            <div>Delay Cost: −{valueOrientation.weights.delayToPayoff.toFixed(2)}</div>
+          </div>
+        </section>
+
+        {/* =====================================================================
+            CAPACITY & TIMELINE CALIBRATION (Rules EX-8 & EX-9)
+           ===================================================================== */}
+        <section className="bg-white border-2 border-[#14161A] p-4 sm:p-5 space-y-4">
+          <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-[#14161A] border-b border-[#D6D5CE] pb-3">
+            <Clock className="w-4 h-4 text-[#1D4ED8] shrink-0" />
+            <h2>Capacity &amp; Target Horizon (Rules EX-8 &amp; EX-9)</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <div>
+              <label
+                htmlFor="weekly-hours-input"
+                className="block text-xs font-semibold text-[#14161A] mb-1.5"
+              >
+                Weekly Hours Available
+              </label>
               <input
-                type="range"
-                min={-2}
-                max={2}
-                step={1}
-                value={valueOrientation.sliders[s.key]}
+                id="weekly-hours-input"
+                type="number"
+                min={2}
+                max={40}
+                value={user.weeklyHoursAvailable}
                 onChange={(e) =>
-                  setValueOrientation(valueOrientation.archetype, {
-                    ...valueOrientation.sliders,
-                    [s.key]: Number(e.target.value),
-                  })
+                  updateCapacitySettings(
+                    Number(e.target.value) || 6,
+                    user.targetMonthsToLaunch
+                  )
                 }
-                className="w-full accent-emerald-800 cursor-pointer"
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] font-mono text-sm bg-[#F9F9F7]"
               />
             </div>
-          ))}
-        </div>
-
-        {/* Active Weight Readout */}
-        <div className="rounded-lg bg-stone-50 border border-stone-200 p-2.5 text-[11px] font-mono text-slate-700 grid grid-cols-2 gap-1">
-          <div>Gaps Closed: +{valueOrientation.weights.gapsClosed.toFixed(2)}</div>
-          <div>Halo/Credibility: +{valueOrientation.weights.credibility.toFixed(2)}</div>
-          <div>Funding: +{valueOrientation.weights.funding.toFixed(2)}</div>
-          <div>Mentor/Net: +{valueOrientation.weights.networkAndMentor.toFixed(2)}</div>
-          <div>Impact Fit: +{valueOrientation.weights.impactAlignment.toFixed(2)}</div>
-          <div>Disruption Cost: −{valueOrientation.weights.disruptionCost.toFixed(2)}</div>
-          <div>Delay Cost: −{valueOrientation.weights.delayToPayoff.toFixed(2)}</div>
-        </div>
-      </section>
+            <div>
+              <label
+                htmlFor="target-months-input"
+                className="block text-xs font-semibold text-[#14161A] mb-1.5"
+              >
+                Target Months to Launch
+              </label>
+              <input
+                id="target-months-input"
+                type="number"
+                min={3}
+                max={60}
+                value={user.targetMonthsToLaunch}
+                onChange={(e) =>
+                  updateCapacitySettings(
+                    user.weeklyHoursAvailable,
+                    Number(e.target.value) || 12
+                  )
+                }
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] font-mono text-sm bg-[#F9F9F7]"
+              />
+            </div>
+          </div>
+          <p className="text-xs sm:text-sm text-[#4B5563]">
+            Tip: Set Target Months to <strong>4</strong> to see the non-intrusive <strong>Rule EX-8</strong> Strategic Timeline Pushback on the Home screen.
+          </p>
+        </section>
+      </div>
 
       {/* =====================================================================
           LIVING CAREER IDENTITY ITEMS & EVIDENCE ATTACHMENT (CI-3, CI-4)
          ===================================================================== */}
-      <section className="rounded-2xl bg-white border border-stone-200 p-3.5 space-y-3 shadow-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-800">
-            <FileCheck2 className="w-3.5 h-3.5 text-emerald-800" />
-            <span>Career Identity &amp; Evidence Wallet (CI-3 &amp; CI-4)</span>
+      <section className="bg-white border-2 border-[#14161A] p-4 sm:p-5 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#D6D5CE] pb-3">
+          <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-[#14161A]">
+            <FileCheck2 className="w-4 h-4 text-[#1D4ED8] shrink-0" />
+            <h2>Career Identity &amp; Evidence Wallet (CI-3 &amp; CI-4)</h2>
           </div>
-          <span className="text-[11px] text-slate-500">
+          <span className="text-xs font-mono font-bold text-[#14161A]">
             {identityItems.filter((i) => i.status === 'evidenced').length}/{identityItems.length} Evidenced
           </span>
         </div>
 
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           {identityItems.map((item) => {
             const isEvidenced = item.status === 'evidenced';
             return (
               <div
                 key={item.id}
-                className="p-3 rounded-xl border border-stone-200 bg-stone-50/70 space-y-2"
+                className="p-3.5 border border-[#14161A] bg-[#F9F9F7] space-y-2.5 flex flex-col justify-between"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500">
-                      {item.category}
-                      {item.constraintSubType ? ` · ${item.constraintSubType}` : ''}
+                <div className="space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <h3 className="text-sm font-bold text-[#14161A]">{item.title}</h3>
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#4B5563] block mt-0.5">
+                        {item.category}
+                        {item.constraintSubType ? ` · ${item.constraintSubType}` : ''}
+                      </span>
+                      <p className="text-xs text-[#4B5563] mt-1">{item.detail}</p>
+                    </div>
+                    <span
+                      className={`px-2.5 py-1 text-[11px] font-mono font-bold uppercase border shrink-0 ${
+                        isEvidenced
+                          ? 'bg-emerald-50 text-[#047857] border-[#047857]'
+                          : 'bg-amber-50 text-amber-900 border-amber-500'
+                      }`}
+                    >
+                      {isEvidenced ? '✓ Evidenced' : 'Declared'}
                     </span>
-                    <h4 className="text-xs font-bold text-slate-900">{item.title}</h4>
-                    <p className="text-[11px] text-slate-600 mt-0.5">{item.detail}</p>
                   </div>
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border shrink-0 ${
-                      isEvidenced
-                        ? 'bg-emerald-50 text-emerald-900 border-emerald-300'
-                        : 'bg-amber-50 text-amber-900 border-amber-200'
-                    }`}
-                  >
-                    {isEvidenced ? '✓ Evidenced' : 'Declared'}
-                  </span>
+
+                  {isEvidenced && item.evidenceFileName && (
+                    <div className="flex items-center gap-1.5 text-xs text-[#047857] bg-emerald-50 px-3 py-2 border border-[#047857]">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      <span className="truncate font-mono">
+                        <strong>{item.evidenceType}:</strong> {item.evidenceFileName}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
-                {isEvidenced && item.evidenceFileName && (
-                  <div className="flex items-center gap-1.5 text-[11px] text-emerald-900 bg-emerald-50/80 px-2.5 py-1 rounded border border-emerald-200">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                    <span className="truncate">
-                      <strong>{item.evidenceType}:</strong> {item.evidenceFileName}
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex items-center justify-between gap-2 pt-1">
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#D6D5CE]">
                   {!isEvidenced && item.category !== 'constraint' ? (
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1.5">
                       {(['CV', 'Transcript', 'Certificate', 'Publication'] as const).map(
                         (evType) => (
                           <button
@@ -272,7 +334,7 @@ export const ProfileSettingsView: React.FC = () => {
                                 `${evType}_${item.matchTag}_verified.pdf`
                               )
                             }
-                            className="px-2 py-1 rounded bg-white hover:bg-emerald-50 border border-stone-300 text-[10px] font-semibold text-slate-800"
+                            className="min-h-[44px] px-2.5 py-1.5 bg-white hover:bg-[#EFF6FF] border border-[#14161A] text-[11px] font-mono font-bold text-[#14161A]"
                           >
                             + Attach {evType} (CI-4)
                           </button>
@@ -280,14 +342,14 @@ export const ProfileSettingsView: React.FC = () => {
                       )}
                     </div>
                   ) : (
-                    <span className="text-[10px] text-slate-400 font-mono">
+                    <span className="text-[11px] text-[#4B5563] font-mono">
                       Updated {item.updatedAt.slice(0, 10)}
                     </span>
                   )}
 
                   <button
                     onClick={() => removeIdentityItem(item.id)}
-                    className="text-[11px] text-rose-700 hover:underline ml-auto"
+                    className="min-h-[44px] px-3 text-xs font-mono font-bold text-[#D92B2B] hover:underline ml-auto"
                   >
                     Remove
                   </button>
@@ -300,16 +362,16 @@ export const ProfileSettingsView: React.FC = () => {
         {/* Add New Profile Item Form */}
         <form
           onSubmit={handleAddItem}
-          className="pt-2 border-t border-stone-200 space-y-2"
+          className="pt-4 border-t-2 border-[#14161A] space-y-3"
         >
-          <span className="text-xs font-bold text-slate-800 block">
+          <span className="text-sm font-extrabold text-[#14161A] block">
             + Add Skill, Experience, or Achievement
           </span>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <select
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value as IdentityCategory)}
-              className="px-2.5 py-1.5 rounded-lg border border-stone-300 text-xs bg-white"
+              className="min-h-[44px] px-3 py-2 border-2 border-[#14161A] text-sm bg-white"
             >
               <option value="education">Education</option>
               <option value="experience">Experience</option>
@@ -320,7 +382,7 @@ export const ProfileSettingsView: React.FC = () => {
             <select
               value={newMatchTag}
               onChange={(e) => setNewMatchTag(e.target.value)}
-              className="px-2.5 py-1.5 rounded-lg border border-stone-300 text-xs bg-white"
+              className="min-h-[44px] px-3 py-2 border-2 border-[#14161A] text-sm bg-white"
             >
               <option value="practical-experience">Closes: Practical / Portfolio</option>
               <option value="licensing-exam">Closes: Licensing / Exam</option>
@@ -329,87 +391,38 @@ export const ProfileSettingsView: React.FC = () => {
               <option value="degree-completed">Closes: Primary Degree</option>
             </select>
           </div>
-          <input
-            type="text"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            placeholder="e.g., Published Clinical Audit / AWS Certified / Law Externship"
-            className="w-full px-3 py-1.5 rounded-lg border border-stone-300 text-xs"
-          />
-          <button
-            type="submit"
-            className="w-full py-2 px-3 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 flex items-center justify-center gap-1"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Add to Living Career Identity</span>
-          </button>
+          <div className="flex flex-col sm:flex-row gap-2.5">
+            <input
+              type="text"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              placeholder="e.g., Published Clinical Audit / AWS Certified / Law Externship"
+              className="min-h-[44px] flex-1 px-3 py-2 border-2 border-[#14161A] text-sm bg-white"
+            />
+            <button
+              type="submit"
+              className="min-h-[44px] px-5 py-2.5 bg-[#14161A] hover:bg-[#1D4ED8] text-white text-xs font-mono font-bold uppercase flex items-center justify-center gap-1.5 shrink-0 transition-colors"
+            >
+              <Plus className="w-4 h-4 shrink-0" />
+              <span>Add to Living Career Identity</span>
+            </button>
+          </div>
         </form>
-      </section>
-
-      {/* =====================================================================
-          CAPACITY & TIMELINE CALIBRATION (Rules EX-8 & EX-9)
-         ===================================================================== */}
-      <section className="rounded-2xl bg-white border border-stone-200 p-3.5 space-y-2.5 shadow-sm">
-        <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-800">
-          <Clock className="w-3.5 h-3.5 text-emerald-800" />
-          <span>Capacity &amp; Target Horizon (Rules EX-8 &amp; EX-9)</span>
-        </div>
-        <div className="grid grid-cols-2 gap-3 text-xs">
-          <div>
-            <label className="block text-[11px] text-slate-600 mb-1">
-              Weekly Hours Available
-            </label>
-            <input
-              type="number"
-              min={2}
-              max={40}
-              value={user.weeklyHoursAvailable}
-              onChange={(e) =>
-                updateCapacitySettings(
-                  Number(e.target.value) || 6,
-                  user.targetMonthsToLaunch
-                )
-              }
-              className="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 font-mono"
-            />
-          </div>
-          <div>
-            <label className="block text-[11px] text-slate-600 mb-1">
-              Target Months to Launch
-            </label>
-            <input
-              type="number"
-              min={3}
-              max={60}
-              value={user.targetMonthsToLaunch}
-              onChange={(e) =>
-                updateCapacitySettings(
-                  user.weeklyHoursAvailable,
-                  Number(e.target.value) || 12
-                )
-              }
-              className="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 font-mono"
-            />
-          </div>
-        </div>
-        <p className="text-[11px] text-slate-500">
-          Tip: Set Target Months to <strong>4</strong> to see the non-intrusive <strong>Rule EX-8</strong> Strategic Timeline Pushback on the Home screen.
-        </p>
       </section>
 
       {/* =====================================================================
           PRIVACY CONSENT & DATA SOVEREIGNTY (Rules CI-6, CI-7, Section 11)
          ===================================================================== */}
-      <section className="rounded-2xl bg-white border border-stone-200 p-3.5 space-y-3 shadow-sm">
-        <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-800">
-          <Shield className="w-3.5 h-3.5 text-emerald-800" />
-          <span>Consent &amp; Data Control (Rules CI-6 &amp; CI-7)</span>
+      <section className="bg-white border-2 border-[#14161A] p-4 sm:p-5 space-y-4">
+        <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-[#14161A] border-b border-[#D6D5CE] pb-3">
+          <Shield className="w-4 h-4 text-[#1D4ED8] shrink-0" />
+          <h2>Consent &amp; Data Control (Rules CI-6 &amp; CI-7)</h2>
         </div>
-        <p className="text-[11px] text-slate-600 leading-relaxed">
+        <p className="text-sm text-[#4B5563] leading-relaxed">
           Constraint data (finances, visa status, geographic access, barriers) requires explicit per-category consent and is used strictly to filter recommendations (NDPA / KDPA / POPIA / GDPR aligned).
         </p>
 
-        <div className="space-y-1.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
           {(
             [
               {
@@ -438,18 +451,18 @@ export const ProfileSettingsView: React.FC = () => {
             return (
               <div
                 key={item.key}
-                className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-stone-50 border border-stone-200"
+                className="flex items-center justify-between gap-3 p-3 bg-[#F9F9F7] border border-[#14161A]"
               >
-                <div>
-                  <div className="text-xs font-semibold text-slate-900">{item.label}</div>
-                  <div className="text-[10px] text-slate-500">{item.purpose}</div>
+                <div className="min-w-0">
+                  <div className="text-sm font-bold text-[#14161A]">{item.label}</div>
+                  <div className="text-xs text-[#4B5563] mt-0.5">{item.purpose}</div>
                 </div>
                 <button
                   onClick={() => toggleConsent(item.key, !granted)}
-                  className={`px-2.5 py-1 rounded-full text-[10px] font-bold border transition-colors shrink-0 ${
+                  className={`min-h-[44px] px-3 py-1.5 text-[11px] font-mono font-bold uppercase border transition-colors shrink-0 ${
                     granted
-                      ? 'bg-emerald-900 text-white border-emerald-950'
-                      : 'bg-stone-200 text-slate-700 border-stone-300'
+                      ? 'bg-[#1D4ED8] text-white border-[#1D4ED8]'
+                      : 'bg-[#E4E2DA] text-[#14161A] border-[#14161A]'
                   }`}
                 >
                   {granted ? 'Consent Active' : 'Withdrawn'}
@@ -460,32 +473,32 @@ export const ProfileSettingsView: React.FC = () => {
         </div>
 
         {exportStatus && (
-          <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-medium">
+          <div className="p-3 bg-emerald-50 border border-[#047857] text-sm text-[#047857] font-semibold">
             {exportStatus}
           </div>
         )}
 
         {/* Export & Delete Buttons (CI-6) */}
-        <div className="grid grid-cols-2 gap-2 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
           <button
             onClick={handleExportProfile}
-            className="py-2 px-3 rounded-xl border border-stone-300 bg-white hover:bg-stone-100 text-slate-800 text-xs font-semibold flex items-center justify-center gap-1.5"
+            className="min-h-[44px] py-2.5 px-4 border-2 border-[#14161A] bg-white hover:bg-[#F2F1EC] text-[#14161A] text-xs font-mono font-bold uppercase flex items-center justify-center gap-2 transition-colors"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-4 h-4 shrink-0" />
             <span>Export JSON (CI-6)</span>
           </button>
           <button
             onClick={resetOrDeleteProfileData}
-            className="py-2 px-3 rounded-xl border border-rose-300 bg-rose-50 hover:bg-rose-100 text-rose-900 text-xs font-semibold flex items-center justify-center gap-1.5"
+            className="min-h-[44px] py-2.5 px-4 border-2 border-[#D92B2B] bg-rose-50 hover:bg-[#D92B2B] hover:text-white text-[#D92B2B] text-xs font-mono font-bold uppercase flex items-center justify-center gap-2 transition-colors"
           >
-            <Trash2 className="w-3.5 h-3.5" />
+            <Trash2 className="w-4 h-4 shrink-0" />
             <span>Delete Data (CI-6)</span>
           </button>
         </div>
 
         <button
           onClick={resetToDefaultDemoUser}
-          className="w-full py-1.5 text-[11px] text-slate-500 hover:text-slate-900 underline"
+          className="min-h-[44px] w-full py-2 text-xs font-mono text-[#4B5563] hover:text-[#14161A] underline"
         >
           Restore Default Seeded Demo Profile (Amara Okafor)
         </button>

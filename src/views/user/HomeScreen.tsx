@@ -59,7 +59,7 @@ interface HomeScreenProps {
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   pathway,
-  gaps,
+  gaps: _gaps,
   tasks,
   evaluatedOpportunities,
   progressMeta,
@@ -110,165 +110,161 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   );
 
   return (
-    <div className="p-3.5 space-y-3.5">
+    <div className="space-y-6 lg:grid lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_380px] lg:gap-8 lg:space-y-0 lg:items-start">
       {/* =====================================================================
-          ABOVE-THE-FOLD 4-QUESTION COMPASS QUADRANT (HS-1, K15)
-          Answers without scrolling:
-          1. Where am I?  2. Where am I going?  3. How am I progressing?  4. What should I do now?
+          MAIN COLUMN: CORRIDOR HEADER, WEEKLY PRIORITY TIMETABLE & FEATURED OPPORTUNITY
          ===================================================================== */}
-      <section
-        aria-label="At-a-Glance Navigation Summary"
-        className="rounded-2xl bg-[#0F172A] text-white p-3.5 space-y-3 shadow-md border border-slate-800"
-      >
-        {/* Q1 & Q2 Row: Where am I? + Where am I going? */}
-        <div className="grid grid-cols-2 gap-2.5">
-          {/* 1. WHERE AM I? (HS-1, HS-4) */}
-          <div className="rounded-xl bg-slate-900/90 border border-slate-800 p-2.5 flex flex-col justify-between">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400">
-              1. Where am I?
-            </span>
-            <div className="mt-1">
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-xs font-bold text-white">
-                  Lvl {progressMeta.current.level}: {progressMeta.current.name}
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-300 mt-0.5 leading-tight">
-                {progressMeta.current.focus}
-              </p>
-            </div>
-            {/* 6-step mini level bar */}
-            <div className="grid grid-cols-6 gap-1 mt-2">
-              {PROGRESS_LEVELS.map((lvl) => (
-                <div
-                  key={lvl.level}
-                  title={`Level ${lvl.level}: ${lvl.name}`}
-                  className={`h-1 rounded-full ${
-                    lvl.level <= progressMeta.current.level
-                      ? 'bg-emerald-400'
-                      : 'bg-slate-700'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* 2. WHERE AM I GOING? (HS-1) */}
-          <button
-            onClick={() => setActiveTab('pathway')}
-            className="text-left rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-800 p-2.5 flex flex-col justify-between transition-colors group"
-          >
-            <div className="flex items-center justify-between w-full">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400">
-                2. Where am I going?
-              </span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-300" />
-            </div>
-            <div className="mt-1">
-              <div className="text-xs font-bold text-white line-clamp-1">
-                {pathway.careerTitle}
-              </div>
-              <p className="text-[11px] text-slate-300 mt-0.5 truncate">
-                {destOption.flag} {pathway.destinationName}
-              </p>
-            </div>
-            <div className="text-[10px] text-slate-400 truncate mt-1.5 font-mono">
-              {pathway.regulatingBody}
-            </div>
-          </button>
-        </div>
-
-        {/* 3. HOW AM I PROGRESSING? (Neutral Indicators — Zero Streaks/Points per EX-5) */}
-        <div className="rounded-xl bg-slate-900/90 border border-slate-800 px-3 py-2 flex items-center justify-between gap-2">
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 block">
-              3. How am I progressing?
-            </span>
-            <p className="text-[11px] text-slate-200 mt-0.5">
-              <strong>
-                {progressMeta.closedGapsCount}/{progressMeta.totalGapsCount}
-              </strong>{' '}
-              Pathway Requirements Evidenced ·{' '}
-              <strong>{progressMeta.evidencedItemsCount}</strong> Verified Proof Items
+      <div className="space-y-6 min-w-0">
+        {/* Header Strip */}
+        <header className="border-b-[3px] border-[#14161A] pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#14161A] leading-tight">
+              This Week&apos;s Priority Schedule (Cap: {weeklyPriorityTasks.length}/{user.effectiveWeeklyCap})
+            </h1>
+            <p className="font-mono text-xs uppercase tracking-wider text-[#1D4ED8] font-bold mt-1.5">
+              Departure Corridor · {pathway.careerTitle} → {destOption.flag} {pathway.destinationName}
             </p>
           </div>
-          <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px] font-mono text-stone-300 shrink-0">
-            Cap: {user.effectiveWeeklyCap}/wk
+          <span className="self-start sm:self-auto font-mono text-xs bg-[#14161A] text-[#F9F9F7] px-2.5 py-1 shrink-0">
+            {pathway.version} · {pathway.regulatingBody.split(' ')[0]}
           </span>
-        </div>
+        </header>
 
-        {/* 4. WHAT SHOULD I DO NOW? — Today's Single Clear Next Step (HS-1, RM-2) */}
-        {weeklyPriorityTasks[0] && (
-          <div className="rounded-xl bg-emerald-950/90 border border-emerald-700/70 p-2.5 space-y-1.5">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-300 font-semibold">
-                4. What should I do now? · Today&apos;s Next Step
-              </span>
-              <span className="text-[10px] font-mono text-emerald-200">
-                ~{weeklyPriorityTasks[0].effortHours}h effort
-              </span>
-            </div>
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-xs font-semibold text-white leading-snug">
-                {weeklyPriorityTasks[0].title}
-              </p>
-              {weeklyPriorityTasks[0].status !== 'Completed' ? (
-                <button
-                  onClick={() =>
-                    completeTask(
-                      weeklyPriorityTasks[0].id,
-                      weeklyPriorityTasks[0].unlocksIdentityItem
-                    )
-                  }
-                  className="px-2.5 py-1 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-slate-950 text-[11px] font-bold shrink-0 transition-colors"
-                >
-                  Mark Done
-                </button>
-              ) : (
-                <span className="px-2 py-0.5 rounded bg-emerald-800 text-emerald-100 text-[10px] font-semibold">
-                  Done
+        {/* Above-the-Fold 4-Question Navigation Summary (HS-1, K15) */}
+        <section
+          aria-label="At-a-Glance Navigation Summary"
+          className="bg-[#14161A] text-[#F9F9F7] border-2 border-[#14161A] p-4 space-y-3"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* 1. WHERE AM I? (HS-1, HS-4) */}
+            <div className="bg-[#1F242D] border border-[#323846] p-3 flex flex-col justify-between">
+              <div>
+                <div className="text-sm font-bold text-white">
+                  Lvl {progressMeta.current.level}: {progressMeta.current.name}
+                </div>
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#93C5FD] block mt-0.5">
+                  1. Where am I?
                 </span>
-              )}
+                <p className="text-xs text-[#D1D5DB] mt-1.5 leading-relaxed">
+                  {progressMeta.current.focus}
+                </p>
+              </div>
+              <div className="grid grid-cols-6 gap-1.5 mt-3" aria-hidden="true">
+                {PROGRESS_LEVELS.map((lvl) => (
+                  <div
+                    key={lvl.level}
+                    title={`Level ${lvl.level}: ${lvl.name}`}
+                    className={`h-1.5 ${
+                      lvl.level <= progressMeta.current.level
+                        ? 'bg-[#D92B2B]'
+                        : 'bg-[#323846]'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-      </section>
 
-      {/* =====================================================================
-          THIS WEEK'S TOP PRIORITIES (Capped strictly at 3 or scaled capacity — HS-2, EX-6)
-         ===================================================================== */}
-      <section className="rounded-2xl bg-white border border-stone-200 p-3.5 space-y-2.5 shadow-sm">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-              This Week&apos;s Priorities (Rule HS-2 &amp; K14)
-            </h2>
-            <p className="text-[11px] text-slate-500">
-              Capped at {user.effectiveWeeklyCap} tasks/week ({user.weeklyHoursAvailable}h/wk capacity) — never a 25-task dump.
-            </p>
+            {/* 2. WHERE AM I GOING? (HS-1) */}
+            <button
+              onClick={() => setActiveTab('pathway')}
+              className="min-h-[44px] text-left bg-[#1F242D] hover:bg-[#2A2E37] border border-[#323846] p-3 flex flex-col justify-between transition-colors group"
+            >
+              <div className="flex items-start justify-between gap-2 w-full">
+                <div className="min-w-0">
+                  <div className="text-sm font-bold text-white truncate">
+                    {pathway.careerTitle}
+                  </div>
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-[#93C5FD] block mt-0.5">
+                    2. Where am I going?
+                  </span>
+                </div>
+                <ArrowUpRight className="w-4 h-4 text-[#9CA3AF] group-hover:text-white shrink-0" />
+              </div>
+              <div className="mt-2">
+                <p className="text-xs text-[#D1D5DB] truncate">
+                  {destOption.flag} {pathway.destinationName}
+                </p>
+                <div className="text-[11px] text-[#9CA3AF] truncate mt-1 font-mono">
+                  {pathway.regulatingBody}
+                </div>
+              </div>
+            </button>
           </div>
-          <button
-            onClick={() => setActiveTab('roadmap')}
-            className="text-[11px] font-semibold text-emerald-800 hover:underline"
-          >
-            Full Roadmap →
-          </button>
-        </div>
+
+          {/* 3. HOW AM I PROGRESSING? (Neutral Indicators — Zero Streaks/Points per EX-5) */}
+          <div className="bg-[#1F242D] border border-[#323846] px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2">
+            <div className="min-w-0">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-[#93C5FD] block">
+                3. How am I progressing?
+              </span>
+              <p className="text-sm text-[#F9F9F7] mt-0.5">
+                <strong>
+                  {progressMeta.closedGapsCount}/{progressMeta.totalGapsCount}
+                </strong>{' '}
+                Pathway Requirements Evidenced ·{' '}
+                <strong>{progressMeta.evidencedItemsCount}</strong> Verified Proof Items
+              </p>
+            </div>
+            <span className="px-2.5 py-1 bg-[#14161A] border border-[#323846] text-[11px] font-mono text-[#F9F9F7] shrink-0">
+              Cap: {user.effectiveWeeklyCap}/wk
+            </span>
+          </div>
+
+          {/* 4. WHAT SHOULD I DO NOW? — Today's Single Clear Next Step (HS-1, RM-2) */}
+          {weeklyPriorityTasks[0] && (
+            <div className="bg-[#1F242D] border-2 border-[#D92B2B] p-3.5 space-y-2.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#FCA5A5] font-bold">
+                  4. What should I do now? · Today&apos;s Next Step
+                </span>
+                <span className="text-[11px] font-mono text-[#F9F9F7]">
+                  ~{weeklyPriorityTasks[0].effortHours}h effort
+                </span>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <p className="text-sm font-bold text-white leading-snug">
+                  {weeklyPriorityTasks[0].title}
+                </p>
+                {weeklyPriorityTasks[0].status !== 'Completed' ? (
+                  <button
+                    onClick={() =>
+                      completeTask(
+                        weeklyPriorityTasks[0].id,
+                        weeklyPriorityTasks[0].unlocksIdentityItem
+                      )
+                    }
+                    className="min-h-[44px] px-4 py-2 bg-[#D92B2B] hover:bg-[#B91C1C] text-white text-xs font-mono font-bold uppercase tracking-wider shrink-0 transition-colors"
+                  >
+                    Mark Done
+                  </button>
+                ) : (
+                  <span className="px-3 py-1.5 bg-[#065F46] text-white text-xs font-mono font-bold uppercase self-start sm:self-auto">
+                    Done
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+        </section>
 
         {/* Neutral Behind-Schedule / Workload Scaling Banner (EX-4, EX-6) */}
         {user.missedTasksCount >= 2 && !behindScheduleBannerDismissed && (
-          <div className="rounded-xl bg-stone-100 border border-stone-300 p-3 space-y-2">
-            <div className="flex items-start gap-2">
-              <CalendarClock className="w-4 h-4 text-slate-700 shrink-0 mt-0.5" />
-              <div className="text-xs text-slate-700 leading-relaxed">
-                <strong className="text-slate-900">
+          <section
+            aria-label="Capacity Adjusted Check-in"
+            className="bg-[#F2F1EC] border-2 border-[#14161A] p-4 space-y-3"
+          >
+            <div className="flex items-start gap-2.5">
+              <CalendarClock className="w-5 h-5 text-[#14161A] shrink-0 mt-0.5" />
+              <div className="text-sm text-[#14161A] leading-relaxed">
+                <strong className="font-bold">
                   Capacity Adjusted Neutral Check-in (Rules EX-4 &amp; EX-6):
                 </strong>{' '}
                 A few tasks slipped recently, so we scaled your weekly list down to{' '}
-                <strong>{user.effectiveWeeklyCap} core priorities</strong> to protect momentum without guilt. How would you like to adjust?
+                <strong>{user.effectiveWeeklyCap} core priorities</strong> to protect
+                momentum without guilt. How would you like to adjust?
               </div>
             </div>
-            <div className="flex flex-wrap gap-1.5 pt-0.5">
+            <div className="flex flex-wrap gap-2">
               {(
                 [
                   { key: 'reschedule', label: 'Reschedule' },
@@ -286,206 +282,359 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       weeklyPriorityTasks[weeklyPriorityTasks.length - 1]?.id
                     )
                   }
-                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-stone-200 border border-stone-300 text-[11px] font-medium text-slate-800 transition-colors"
+                  className="min-h-[44px] px-3 py-2 bg-white hover:bg-[#E4E2DA] border border-[#14161A] text-xs font-semibold text-[#14161A] transition-colors"
                 >
                   {opt.label}
                 </button>
               ))}
             </div>
-          </div>
+          </section>
         )}
 
-        <div className="space-y-2">
-          {weeklyPriorityTasks.map((task, index) => {
-            const isDone = task.status === 'Completed';
-            const isLocked = task.status === 'Locked';
-            return (
-              <div
-                key={task.id}
-                className={`p-2.5 rounded-xl border transition-all ${
-                  isDone
-                    ? 'bg-emerald-50/50 border-emerald-200'
-                    : isLocked
-                    ? 'bg-stone-50 border-stone-200 opacity-75'
-                    : 'bg-stone-50/70 border-stone-200/90 hover:border-stone-300'
-                }`}
+        {/* =====================================================================
+            THIS WEEK'S TOP PRIORITIES TIMETABLE (Capped strictly at 3 — HS-2, EX-6)
+           ===================================================================== */}
+        <section aria-labelledby="weekly-priorities-heading" className="space-y-3">
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <h2
+                id="weekly-priorities-heading"
+                className="text-base sm:text-lg font-extrabold text-[#14161A]"
               >
-                <div className="flex items-start gap-2.5">
-                  <button
-                    disabled={isLocked || isDone}
-                    onClick={() => completeTask(task.id, task.unlocksIdentityItem)}
-                    className="mt-0.5 text-slate-500 hover:text-emerald-700 disabled:cursor-not-allowed"
-                    title={isLocked ? 'Prerequisite task must finish first (RM-3)' : 'Complete task'}
-                  >
-                    {isDone ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                    ) : isLocked ? (
-                      <Lock className="w-4 h-4 text-slate-400" />
-                    ) : (
-                      <Circle className="w-4 h-4" />
-                    )}
-                  </button>
+                This Week&apos;s Priorities (Rule HS-2 &amp; K14)
+              </h2>
+              <p className="text-xs sm:text-sm text-[#4B5563] mt-0.5">
+                Capped at {user.effectiveWeeklyCap} tasks/week ({user.weeklyHoursAvailable}h/wk capacity) — never a 25-task dump.
+              </p>
+            </div>
+            <button
+              onClick={() => setActiveTab('roadmap')}
+              className="min-h-[44px] px-3 py-2 text-xs font-mono font-bold uppercase text-[#1D4ED8] hover:bg-[#EFF6FF] border border-transparent hover:border-[#1D4ED8] transition-colors"
+            >
+              Full Roadmap →
+            </button>
+          </div>
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500">
-                        Priority #{index + 1} · {task.dueDate}
-                      </span>
-                      <span className="text-[10px] font-mono text-slate-500">
-                        {task.effortHours}h
-                      </span>
-                    </div>
-                    <h3
-                      className={`text-xs font-bold mt-0.5 leading-snug ${
-                        isDone ? 'line-through text-slate-500' : 'text-slate-900'
-                      }`}
-                    >
-                      {task.title}
-                    </h3>
-                    <p className="text-[11px] text-slate-600 mt-1 leading-relaxed">
-                      {task.priorityExplanation}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* =====================================================================
-          SINGLE VERIFIED HIGH-LEVERAGE OPPORTUNITY CARD (HS-3, LV-5, LV-6)
-         ===================================================================== */}
-      {featuredOpportunity && (
-        <section className="rounded-2xl bg-white border border-emerald-300/90 p-3.5 space-y-2.5 shadow-sm relative overflow-hidden">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-900">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-700" />
-              <span>
-                {featuredOpportunity.isImmediateAlertEligible
-                  ? 'Immediate Exceptional Alert (LV-5)'
-                  : 'High-Leverage Opportunity Now (HS-3)'}
-              </span>
+          <div className="border-2 border-[#14161A] bg-white">
+            {/* Desktop / Tablet Timetable Column Header */}
+            <div className="hidden sm:grid sm:grid-cols-[76px_1fr_76px_124px] bg-[#14161A] text-white px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider gap-3">
+              <span>Index</span>
+              <span>Priority Milestone</span>
+              <span className="text-right">Effort</span>
+              <span className="text-center">Gate State</span>
             </div>
 
-            {/* 1-Tap Score Breakdown Button (LV-6) */}
-            <button
-              onClick={() =>
-                setActiveBreakdownOpportunityId(featuredOpportunity.opportunity.id)
-              }
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-emerald-900 text-white hover:bg-emerald-800 transition-colors"
-              title="Tap to inspect deterministic score breakdown and Value Orientation weights"
-            >
-              <Calculator className="w-3 h-3" />
-              <span>
-                {featuredOpportunity.breakdown.rawScore.toFixed(2)} ·{' '}
-                {featuredOpportunity.breakdown.finalLevel}
-              </span>
-            </button>
-          </div>
+            <div className="divide-y divide-[#D6D5CE]">
+              {weeklyPriorityTasks.map((task, index) => {
+                const isDone = task.status === 'Completed';
+                const isLocked = task.status === 'Locked';
+                const code = `W1-0${index + 1}`;
 
-          <div>
-            <h3 className="text-xs font-bold text-slate-900 leading-snug">
-              {featuredOpportunity.opportunity.title}
-            </h3>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              {featuredOpportunity.opportunity.organization} · Verified Deadline:{' '}
-              <strong className="text-slate-700">
-                {featuredOpportunity.opportunity.deadline}
-              </strong>
-            </p>
-          </div>
+                return (
+                  <div
+                    key={task.id}
+                    className={`p-4 flex flex-col sm:grid sm:grid-cols-[76px_1fr_76px_124px] sm:items-center gap-3 ${
+                      isDone
+                        ? 'bg-[#F2F1EC]/70'
+                        : isLocked
+                        ? 'bg-[#F9F9F7] opacity-80'
+                        : 'bg-white'
+                    }`}
+                  >
+                    {/* Index + Mobile Effort/Action Row */}
+                    <div className="flex items-center justify-between sm:block">
+                      <span
+                        className={`inline-block font-mono text-xs font-bold px-2.5 py-1.5 text-center ${
+                          index === 0 && !isDone
+                            ? 'bg-[#D92B2B] text-white'
+                            : 'bg-[#14161A] text-white'
+                        }`}
+                      >
+                        {code}
+                      </span>
 
-          <p className="text-xs text-slate-600 leading-relaxed bg-stone-50 p-2.5 rounded-lg border border-stone-200/80">
-            <strong className="text-slate-800">Why it matters for you: </strong>
-            Closes {featuredOpportunity.breakdown.comboGapsClosedCount} pathway gaps (
-            {featuredOpportunity.breakdown.comboGapsTitles.join(', ')}) and scores{' '}
-            <strong>{featuredOpportunity.breakdown.rawScore.toFixed(2)}</strong> under your{' '}
-            <strong>{valueOrientation.archetype}</strong> weights.
-          </p>
+                      <span className="sm:hidden font-mono text-xs font-bold text-[#14161A]">
+                        {task.effortHours}h · {task.dueDate}
+                      </span>
+                    </div>
 
-          <div className="flex items-center justify-between gap-2 pt-0.5">
-            <button
-              onClick={() =>
-                setActiveBreakdownOpportunityId(featuredOpportunity.opportunity.id)
-              }
-              className="px-2.5 py-1.5 rounded-lg border border-stone-300 text-slate-700 hover:bg-stone-100 text-xs font-medium"
-            >
-              Explain Score (LV-6)
-            </button>
-            <button
-              onClick={() => {
-                updateOpportunityLifecycle(
-                  featuredOpportunity.opportunity.id,
-                  'Preparing'
+                    {/* Title & Explanation */}
+                    <div className="min-w-0">
+                      <div className="flex items-start gap-2.5">
+                        <button
+                          disabled={isLocked || isDone}
+                          onClick={() =>
+                            completeTask(task.id, task.unlocksIdentityItem)
+                          }
+                          className="min-h-[44px] min-w-[44px] -ml-2 -mt-2 inline-flex items-center justify-center text-[#14161A] hover:text-[#1D4ED8] disabled:cursor-not-allowed shrink-0"
+                          title={
+                            isLocked
+                              ? 'Prerequisite task must finish first (RM-3)'
+                              : 'Complete task'
+                          }
+                          aria-label={
+                            isDone
+                              ? `${task.title} completed`
+                              : isLocked
+                              ? `${task.title} locked`
+                              : `Mark ${task.title} complete`
+                          }
+                        >
+                          {isDone ? (
+                            <CheckCircle2 className="w-5 h-5 text-[#047857]" />
+                          ) : isLocked ? (
+                            <Lock className="w-5 h-5 text-[#4B5563]" />
+                          ) : (
+                            <Circle className="w-5 h-5" />
+                          )}
+                        </button>
+
+                        <div className="min-w-0">
+                          <h3
+                            className={`text-sm sm:text-base font-bold leading-snug ${
+                              isDone
+                                ? 'line-through text-[#4B5563]'
+                                : 'text-[#14161A]'
+                            }`}
+                          >
+                            {task.title}
+                          </h3>
+                          <p className="text-xs sm:text-sm text-[#4B5563] mt-1 leading-relaxed">
+                            {task.priorityExplanation}
+                          </p>
+                          <div className="hidden sm:block text-[11px] font-mono text-[#4B5563] mt-1">
+                            Priority #{index + 1} · {task.dueDate}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Desktop Effort */}
+                    <div className="hidden sm:block text-right font-mono text-sm font-bold text-[#14161A]">
+                      {task.effortHours}h
+                    </div>
+
+                    {/* Gate State / Action */}
+                    <div className="flex sm:justify-center">
+                      {isDone ? (
+                        <span className="w-full sm:w-auto px-2.5 py-1.5 border border-[#047857] bg-emerald-50 text-[#047857] font-mono text-[11px] font-bold text-center uppercase">
+                          Completed
+                        </span>
+                      ) : isLocked ? (
+                        <span className="w-full sm:w-auto px-2.5 py-1.5 border border-[#D6D5CE] bg-[#F2F1EC] text-[#4B5563] font-mono text-[11px] font-bold text-center uppercase">
+                          Locked
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() =>
+                            completeTask(task.id, task.unlocksIdentityItem)
+                          }
+                          className="min-h-[44px] w-full sm:w-auto px-3 py-1.5 border-2 border-[#14161A] bg-white hover:bg-[#14161A] hover:text-white font-mono text-[11px] font-bold uppercase transition-colors"
+                        >
+                          {task.layer === 'today' ? 'TODAY · DONE' : 'THIS WEEK'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 );
-                setActiveTab('roadmap');
-              }}
-              className="flex-1 py-1.5 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold text-center transition-colors"
-            >
-              Start Preparing (Spawns Prep Tasks — EX-1)
-            </button>
+              })}
+            </div>
           </div>
         </section>
-      )}
+
+        {/* =====================================================================
+            SINGLE VERIFIED HIGH-LEVERAGE OPPORTUNITY CARD (HS-3, LV-5, LV-6)
+           ===================================================================== */}
+        {featuredOpportunity && (
+          <section
+            aria-label="Verified High-Leverage Opportunity"
+            className="border-2 border-[#1D4ED8] bg-[#EFF6FF] p-4 sm:p-5 space-y-4"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+              <div className="space-y-1.5 min-w-0">
+                <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono font-bold uppercase tracking-wider text-[#1D4ED8]">
+                  <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                  <span>
+                    {featuredOpportunity.isImmediateAlertEligible
+                      ? 'Immediate Exceptional Alert (LV-5)'
+                      : 'High-Leverage Opportunity Now (HS-3)'}
+                  </span>
+                </div>
+                <h3 className="text-lg font-extrabold text-[#14161A] leading-snug">
+                  {featuredOpportunity.opportunity.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-[#4B5563]">
+                  {featuredOpportunity.opportunity.organization} · Verified Deadline:{' '}
+                  <strong className="text-[#14161A]">
+                    {featuredOpportunity.opportunity.deadline}
+                  </strong>
+                </p>
+              </div>
+
+              {/* 1-Tap Score Breakdown Button (LV-6) */}
+              <button
+                onClick={() =>
+                  setActiveBreakdownOpportunityId(
+                    featuredOpportunity.opportunity.id
+                  )
+                }
+                className="min-h-[44px] self-start bg-[#1D4ED8] hover:bg-[#1E40AF] text-white px-4 py-2.5 font-mono text-left sm:text-center shrink-0 transition-colors"
+                title="Tap to inspect deterministic score breakdown and Value Orientation weights"
+              >
+                <div className="flex items-center gap-1.5 text-xl font-bold leading-none">
+                  <Calculator className="w-4 h-4 shrink-0" />
+                  <span>
+                    {featuredOpportunity.breakdown.rawScore > 0
+                      ? `+${featuredOpportunity.breakdown.rawScore.toFixed(2)}`
+                      : featuredOpportunity.breakdown.rawScore.toFixed(2)}
+                  </span>
+                </div>
+                <div className="text-[11px] uppercase tracking-wider mt-1">
+                  {featuredOpportunity.breakdown.finalLevel}
+                </div>
+              </button>
+            </div>
+
+            <p className="text-sm text-[#14161A] leading-relaxed bg-white p-3.5 border border-[#1D4ED8]/40">
+              <strong>Why it matters for you: </strong>
+              Closes {featuredOpportunity.breakdown.comboGapsClosedCount} pathway gaps (
+              {featuredOpportunity.breakdown.comboGapsTitles.join(', ')}) and scores{' '}
+              <strong>{featuredOpportunity.breakdown.rawScore.toFixed(2)}</strong>{' '}
+              under your <strong>{valueOrientation.archetype}</strong> weights.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+              <button
+                onClick={() =>
+                  setActiveBreakdownOpportunityId(
+                    featuredOpportunity.opportunity.id
+                  )
+                }
+                className="min-h-[44px] px-4 py-2.5 border-2 border-[#14161A] bg-white hover:bg-[#F2F1EC] text-[#14161A] text-xs font-mono font-bold uppercase transition-colors"
+              >
+                Explain Score (LV-6)
+              </button>
+              <button
+                onClick={() => {
+                  updateOpportunityLifecycle(
+                    featuredOpportunity.opportunity.id,
+                    'Preparing'
+                  );
+                  setActiveTab('roadmap');
+                }}
+                className="min-h-[44px] flex-1 py-2.5 px-4 bg-[#14161A] hover:bg-[#D92B2B] text-white text-xs font-mono font-bold uppercase text-center transition-colors"
+              >
+                Start Preparing (Spawns Prep Tasks — EX-1)
+              </button>
+            </div>
+          </section>
+        )}
+      </div>
 
       {/* =====================================================================
-          STRATEGIC ACCOUNTABILITY & INSIGHT BANNERS (EX-3, EX-8, VO-7)
+          RIGHT RAIL (Desktop >= 1024px; stacked cleanly below on Phone & Tablet)
+          Progress Level Standing, Strategic Insights, Progressive Identity Prompt
          ===================================================================== */}
-      {insights.conversionInsight.active && (
-        <div className="rounded-xl bg-stone-100 border border-stone-300 p-3 space-y-1.5">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
-            <Info className="w-4 h-4 text-emerald-800" />
-            <span>Submission vs. Outcome Pattern Insight (Rule EX-3 &amp; K13)</span>
+      <aside className="space-y-5 lg:border-l-2 lg:border-[#14161A] lg:pl-7">
+        {/* 6-Stop Corridor Standing Panel */}
+        <section
+          aria-label="Corridor Standing"
+          className="border-2 border-[#14161A] bg-white p-4 sm:p-5 space-y-4"
+        >
+          <div>
+            <h2 className="text-lg font-extrabold text-[#14161A]">
+              {pathway.careerTitle} → {pathway.destinationName}
+            </h2>
+            <div className="text-[11px] font-mono uppercase tracking-wider text-[#D92B2B] font-bold mt-1">
+              Corridor Standing · Level {progressMeta.current.level} of 6
+            </div>
           </div>
-          <p className="text-xs text-slate-700 leading-relaxed">
-            {insights.conversionInsight.message}
-          </p>
-          <p className="text-xs text-emerald-950 font-medium bg-white p-2 rounded-lg border border-stone-200">
-            <strong>Recommended Alternative:</strong>{' '}
-            {insights.conversionInsight.recommendedAlternative}
-          </p>
-        </div>
-      )}
 
-      {insights.timelinePushback.active && (
-        <div className="rounded-xl bg-stone-100 border border-stone-300 p-3 space-y-1.5">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
-            <Compass className="w-4 h-4 text-slate-700" />
-            <span>Strategic Plan &amp; Timeline Check (Rule EX-8)</span>
-          </div>
-          <p className="text-xs text-slate-700 leading-relaxed">
-            {insights.timelinePushback.message}
-          </p>
-          <button
-            onClick={() => setActiveTab('profile')}
-            className="text-xs font-semibold text-emerald-900 hover:underline"
-          >
-            Adjust timeline or weekly hours in Settings →
-          </button>
-        </div>
-      )}
+          <ol className="space-y-2.5 border-l-2 border-[#14161A] pl-3.5">
+            {PROGRESS_LEVELS.map((lvl) => {
+              const isCurrent = lvl.level === progressMeta.current.level;
+              const isCleared = lvl.level < progressMeta.current.level;
+              return (
+                <li
+                  key={lvl.level}
+                  className={`font-mono text-xs leading-snug ${
+                    isCurrent
+                      ? 'text-[#1D4ED8] font-bold'
+                      : isCleared
+                      ? 'text-[#14161A]'
+                      : 'text-[#4B5563]'
+                  }`}
+                >
+                  {isCurrent ? '● ' : isCleared ? '✓ ' : '○ '}
+                  0{lvl.level} · {lvl.name}
+                  {isCurrent &&
+                    ` (Active · ${progressMeta.closedGapsCount}/${progressMeta.totalGapsCount} Evidenced)`}
+                </li>
+              );
+            })}
+          </ol>
 
-      {insights.valueOrientationRecheck.active && (
-        <div className="rounded-xl bg-amber-50/80 border border-amber-200 p-3 space-y-1.5">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-amber-950">
-            <Sliders className="w-4 h-4 text-amber-800" />
-            <span>Value Orientation Re-Check (Rule VO-7)</span>
-          </div>
-          <p className="text-xs text-amber-900 leading-relaxed">
-            {insights.valueOrientationRecheck.message}
+          <p className="text-xs text-[#4B5563] bg-[#F2F1EC] p-2.5 border border-[#D6D5CE]">
+            {progressMeta.nextLevelHint}
           </p>
-          <button
-            onClick={() => setActiveTab('profile')}
-            className="px-3 py-1 rounded-lg bg-amber-900 text-white text-xs font-semibold"
-          >
-            Review Archetype &amp; Sliders
-          </button>
-        </div>
-      )}
+        </section>
 
-      {/* Progressive Profile Prompt (Rule CI-2) */}
-      <ProgressivePromptCard />
+        {/* Strategic Accountability & Insight Banners (EX-3, EX-8, VO-7) */}
+        {insights.conversionInsight.active && (
+          <section className="border-2 border-[#14161A] bg-[#F2F1EC] p-4 space-y-2">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#14161A]">
+              <Info className="w-4 h-4 text-[#1D4ED8] shrink-0" />
+              <span>Submission vs. Outcome Pattern Insight (Rule EX-3 &amp; K13)</span>
+            </div>
+            <p className="text-sm text-[#4B5563] leading-relaxed">
+              {insights.conversionInsight.message}
+            </p>
+            <p className="text-xs text-[#14161A] font-medium bg-white p-2.5 border border-[#D6D5CE]">
+              <strong>Recommended Alternative:</strong>{' '}
+              {insights.conversionInsight.recommendedAlternative}
+            </p>
+          </section>
+        )}
+
+        {insights.timelinePushback.active && (
+          <section className="border-2 border-[#14161A] bg-[#F2F1EC] p-4 space-y-2.5">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#14161A]">
+              <Compass className="w-4 h-4 text-[#14161A] shrink-0" />
+              <span>Strategic Plan &amp; Timeline Check (Rule EX-8)</span>
+            </div>
+            <p className="text-sm text-[#4B5563] leading-relaxed">
+              {insights.timelinePushback.message}
+            </p>
+            <button
+              onClick={() => setActiveTab('profile')}
+              className="min-h-[44px] w-full sm:w-auto px-3 py-2 bg-white border border-[#14161A] text-xs font-mono font-bold text-[#1D4ED8] hover:bg-[#EFF6FF] transition-colors"
+            >
+              Adjust timeline or weekly hours in Settings →
+            </button>
+          </section>
+        )}
+
+        {insights.valueOrientationRecheck.active && (
+          <section className="border-2 border-amber-500 bg-amber-50 p-4 space-y-2.5">
+            <div className="flex items-center gap-2 text-xs font-bold text-amber-950">
+              <Sliders className="w-4 h-4 text-amber-800 shrink-0" />
+              <span>Value Orientation Re-Check (Rule VO-7)</span>
+            </div>
+            <p className="text-sm text-amber-950 leading-relaxed">
+              {insights.valueOrientationRecheck.message}
+            </p>
+            <button
+              onClick={() => setActiveTab('profile')}
+              className="min-h-[44px] w-full px-3 py-2 bg-amber-900 hover:bg-amber-950 text-white text-xs font-mono font-bold uppercase transition-colors"
+            >
+              Review Archetype &amp; Sliders
+            </button>
+          </section>
+        )}
+
+        {/* Progressive Profile Prompt (Rule CI-2) */}
+        <ProgressivePromptCard />
+      </aside>
     </div>
   );
 };

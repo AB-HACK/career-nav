@@ -229,17 +229,17 @@ export const App: React.FC = () => {
       onStartOnboardingDemo={() => setShowOnboardingModal(true)}
     >
       {route === '404' ? (
-        <div className="p-4 space-y-4">
-          <section className="bg-white rounded-2xl border border-stone-200/90 p-5 shadow-sm text-center space-y-3">
-            <span className="inline-block text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-stone-100 text-slate-600 border border-stone-200">
+        <div className="max-w-xl mx-auto py-8">
+          <section className="bg-white border-2 border-[#14161A] p-6 text-center space-y-4">
+            <span className="inline-block text-xs font-mono uppercase tracking-wider px-2.5 py-1 bg-[#14161A] text-white">
               404 • Route Not Found
             </span>
-            <h1 className="text-base font-bold text-slate-900">
+            <h1 className="text-xl font-extrabold text-[#14161A]">
               Page not found
             </h1>
-            <p className="text-xs text-slate-600 leading-relaxed">
+            <p className="text-sm text-[#4B5563] leading-relaxed">
               No route matches{' '}
-              <code className="font-mono text-[11px] bg-stone-100 px-1.5 py-0.5 rounded text-slate-800">
+              <code className="font-mono text-xs bg-[#F2F1EC] px-1.5 py-0.5 border border-[#D6D5CE] text-[#14161A]">
                 {window.location.pathname}
               </code>
               . Use the navigation below or return to Home.
@@ -247,7 +247,7 @@ export const App: React.FC = () => {
             <div className="pt-1">
               <button
                 onClick={() => navigateRoute('/')}
-                className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition-colors"
+                className="min-h-[44px] px-5 py-2.5 bg-[#14161A] hover:bg-[#D92B2B] text-white text-xs font-mono font-bold uppercase transition-colors"
               >
                 Return to Home (/)
               </button>

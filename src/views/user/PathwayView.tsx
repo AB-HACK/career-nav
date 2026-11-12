@@ -51,35 +51,39 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
   const topNextTask = tasks.find((t) => t.status !== 'Completed' && t.status !== 'Dropped');
 
   return (
-    <div className="p-3.5 space-y-4">
+    <div className="space-y-6">
       {/* =====================================================================
           GOAL FRAMING PANEL (Rule SM-5: The 7 Required Framing Items)
-          1. Goal  2. Profile  3. Destination  4. Pathway  5. Current Position  6. Gaps  7. Next Actions
          ===================================================================== */}
-      <section className="rounded-2xl bg-[#0F172A] text-white p-4 space-y-3 shadow-md">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-emerald-400">
-            <Compass className="w-3.5 h-3.5" />
-            <span>Engine 3 · Goal Framing Panel (Rule SM-5)</span>
+      <header className="bg-[#14161A] text-[#F9F9F7] border-2 border-[#14161A] p-4 sm:p-6 space-y-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+              {pathway.careerTitle} → {pathway.destinationName}
+            </h1>
+            <div className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-[#93C5FD] mt-1">
+              <Compass className="w-3.5 h-3.5 shrink-0" />
+              <span>Engine 3 · Goal Framing Panel (Rule SM-5)</span>
+            </div>
           </div>
           <button
             onClick={() => setShowDestinationSwitcher(!showDestinationSwitcher)}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] text-emerald-300 font-medium transition-colors"
+            className="min-h-[44px] inline-flex items-center gap-2 px-3.5 py-2 bg-[#1F242D] hover:bg-[#2A2E37] border border-[#323846] text-xs font-mono font-bold text-[#93C5FD] transition-colors shrink-0"
           >
-            <SlidersHorizontal className="w-3 h-3" />
+            <SlidersHorizontal className="w-4 h-4 shrink-0" />
             <span>Change Goal / Destination (PI-1)</span>
           </button>
         </div>
 
         {/* Interactive Career + Destination Switcher to test PI-1, RM-6 & PI-8 */}
         {showDestinationSwitcher && (
-          <div className="rounded-xl bg-slate-900 border border-slate-700 p-3 space-y-2.5">
-            <div className="text-[11px] text-emerald-300 font-semibold">
+          <div className="bg-[#1F242D] border border-[#323846] p-4 space-y-3">
+            <div className="text-xs text-[#93C5FD] font-semibold">
               Test PI-1 &amp; RM-6: Two users with the same goal and different destinations get different pathways (history preserved).
             </div>
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[10px] uppercase text-slate-400 mb-1">
+                <label className="block text-[11px] font-mono uppercase text-[#D1D5DB] mb-1.5">
                   Target Career Goal (13 Curated Fields + PI-8 Unsupported Test)
                 </label>
                 <select
@@ -93,7 +97,7 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
                       user.engineeringTrack
                     )
                   }
-                  className="w-full px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-white"
+                  className="min-h-[44px] w-full px-3 py-2 bg-[#14161A] border border-[#323846] text-sm text-white"
                 >
                   {CAREER_FIELDS.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -103,70 +107,8 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
                 </select>
               </div>
 
-              {user.goalCareerId === 'engineering' && (
-                <div>
-                  <label className="block text-[10px] uppercase text-slate-400 mb-1">
-                    Engineering Sub-Discipline
-                  </label>
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {(['Petroleum', 'Civil', 'Electrical/Electronics', 'Mechanical'] as const).map(
-                      (tr) => (
-                        <button
-                          key={tr}
-                          onClick={() =>
-                            updateGoalAndDestination(
-                              'engineering',
-                              user.destinationId,
-                              user.institutionOrCity,
-                              customGoalInput,
-                              tr
-                            )
-                          }
-                          className={`px-2 py-1 rounded text-[11px] font-medium border ${
-                            user.engineeringTrack === tr
-                              ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-bold'
-                              : 'bg-slate-800 text-slate-300 border-slate-700'
-                          }`}
-                        >
-                          {tr}
-                        </button>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {user.goalCareerId === 'custom-unsupported' && (
-                <div>
-                  <label className="block text-[10px] uppercase text-amber-300 mb-1">
-                    Custom Unlisted Career Goal (Rule PI-8 Fallback)
-                  </label>
-                  <div className="flex gap-1.5">
-                    <input
-                      type="text"
-                      value={customGoalInput}
-                      onChange={(e) => setCustomGoalInput(e.target.value)}
-                      className="flex-1 px-2.5 py-1 rounded-lg bg-slate-800 border border-amber-500/60 text-xs text-white"
-                    />
-                    <button
-                      onClick={() =>
-                        updateGoalAndDestination(
-                          'custom-unsupported',
-                          user.destinationId,
-                          user.institutionOrCity,
-                          customGoalInput
-                        )
-                      }
-                      className="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 text-xs font-bold"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                </div>
-              )}
-
               <div>
-                <label className="block text-[10px] uppercase text-slate-400 mb-1">
+                <label className="block text-[11px] font-mono uppercase text-[#D1D5DB] mb-1.5">
                   Target Destination Country / Hub (10 Contexts)
                 </label>
                 <select
@@ -180,7 +122,7 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
                       user.engineeringTrack
                     )
                   }
-                  className="w-full px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-xs text-white"
+                  className="min-h-[44px] w-full px-3 py-2 bg-[#14161A] border border-[#323846] text-sm text-white"
                 >
                   {DESTINATIONS.map((d) => (
                     <option key={d.id} value={d.id}>
@@ -190,150 +132,211 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
                 </select>
               </div>
             </div>
+
+            {user.goalCareerId === 'engineering' && (
+              <div>
+                <label className="block text-[11px] font-mono uppercase text-[#D1D5DB] mb-1.5">
+                  Engineering Sub-Discipline
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {(['Petroleum', 'Civil', 'Electrical/Electronics', 'Mechanical'] as const).map(
+                    (tr) => (
+                      <button
+                        key={tr}
+                        onClick={() =>
+                          updateGoalAndDestination(
+                            'engineering',
+                            user.destinationId,
+                            user.institutionOrCity,
+                            customGoalInput,
+                            tr
+                          )
+                        }
+                        className={`min-h-[44px] px-3 py-2 text-xs font-mono font-semibold border text-left ${
+                          user.engineeringTrack === tr
+                            ? 'bg-[#D92B2B] text-white border-[#D92B2B]'
+                            : 'bg-[#14161A] text-[#D1D5DB] border-[#323846]'
+                        }`}
+                      >
+                        {tr}
+                      </button>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
+
+            {user.goalCareerId === 'custom-unsupported' && (
+              <div>
+                <label className="block text-[11px] font-mono uppercase text-amber-300 mb-1.5">
+                  Custom Unlisted Career Goal (Rule PI-8 Fallback)
+                </label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="text"
+                    value={customGoalInput}
+                    onChange={(e) => setCustomGoalInput(e.target.value)}
+                    className="min-h-[44px] flex-1 px-3 py-2 bg-[#14161A] border border-amber-400 text-sm text-white"
+                  />
+                  <button
+                    onClick={() =>
+                      updateGoalAndDestination(
+                        'custom-unsupported',
+                        user.destinationId,
+                        user.institutionOrCity,
+                        customGoalInput
+                      )
+                    }
+                    className="min-h-[44px] px-4 py-2 bg-amber-400 text-[#14161A] text-xs font-mono font-bold uppercase"
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
         {/* The 7 Mandatory Items of SM-5 */}
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-400 uppercase block">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-sm">
+          <div className="p-3 bg-[#1F242D] border border-[#323846]">
+            <span className="text-[11px] font-mono text-[#9CA3AF] uppercase block">
               1. Your Goal
             </span>
-            <span className="font-bold text-white block mt-0.5">{pathway.careerTitle}</span>
+            <span className="font-bold text-white block mt-1">{pathway.careerTitle}</span>
           </div>
-          <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-400 uppercase block">
+          <div className="p-3 bg-[#1F242D] border border-[#323846]">
+            <span className="text-[11px] font-mono text-[#9CA3AF] uppercase block">
               2. Your Destination
             </span>
-            <span className="font-bold text-white block mt-0.5">
+            <span className="font-bold text-white block mt-1">
               {pathway.destinationName}
               {user.institutionOrCity ? ` · ${user.institutionOrCity}` : ''}
             </span>
           </div>
-          <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-400 uppercase block">
+          <div className="p-3 bg-[#1F242D] border border-[#323846]">
+            <span className="text-[11px] font-mono text-[#9CA3AF] uppercase block">
               3. Your Profile
             </span>
-            <span className="font-semibold text-slate-200 block mt-0.5">
+            <span className="font-semibold text-[#F9F9F7] block mt-1">
               {identityItems.length} recorded items ({progressMeta.evidencedItemsCount} evidenced)
             </span>
           </div>
-          <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-400 uppercase block">
+          <div className="p-3 bg-[#1F242D] border border-[#323846]">
+            <span className="text-[11px] font-mono text-[#9CA3AF] uppercase block">
               4. Your Pathway
             </span>
-            <span className="font-semibold text-emerald-300 block mt-0.5 truncate">
+            <span className="font-semibold text-[#93C5FD] block mt-1 truncate">
               {pathway.regulatingBody}
             </span>
           </div>
-          <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-400 uppercase block">
+          <div className="p-3 bg-[#1F242D] border border-[#323846]">
+            <span className="text-[11px] font-mono text-[#9CA3AF] uppercase block">
               5. Current Position
             </span>
-            <span className="font-semibold text-slate-200 block mt-0.5">
+            <span className="font-semibold text-[#F9F9F7] block mt-1">
               Lvl {progressMeta.current.level}: {progressMeta.current.name}
             </span>
           </div>
-          <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800">
-            <span className="text-[10px] font-mono text-slate-400 uppercase block">
+          <div className="p-3 bg-[#1F242D] border border-[#323846]">
+            <span className="text-[11px] font-mono text-[#9CA3AF] uppercase block">
               6. Your Gaps
             </span>
-            <span className="font-semibold text-amber-300 block mt-0.5">
+            <span className="font-semibold text-amber-300 block mt-1">
               {openGaps.length} open of {gaps.length} requirements
             </span>
           </div>
         </div>
 
         {/* 7. Your Next Action */}
-        <div className="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-2">
+        <div className="p-3.5 bg-[#1F242D] border-2 border-[#D92B2B] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="min-w-0">
-            <span className="text-[10px] font-mono text-emerald-400 uppercase block">
+            <span className="text-[11px] font-mono text-[#FCA5A5] uppercase font-bold block">
               7. Your Next Action
             </span>
-            <span className="text-xs font-semibold text-white truncate block mt-0.5">
+            <span className="text-sm font-bold text-white block mt-0.5">
               {topNextTask ? topNextTask.title : 'All current pathway tasks completed'}
             </span>
           </div>
           <button
             onClick={() => setActiveTab('roadmap')}
-            className="px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 text-[11px] font-bold shrink-0"
+            className="min-h-[44px] px-4 py-2 bg-[#D92B2B] hover:bg-[#B91C1C] text-white text-xs font-mono font-bold uppercase shrink-0 transition-colors"
           >
-            Go
+            Go →
           </button>
         </div>
 
         {/* Specificity Adaptation Badge (PI-7) */}
-        <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
-          <span className="inline-flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5 text-emerald-400" />
-            Specificity Level (PI-7): <strong className="text-slate-200">{pathway.specificityUsed}</strong>
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#D1D5DB] pt-2 border-t border-[#2A2E37]">
+          <span className="inline-flex items-center gap-1.5">
+            <MapPin className="w-4 h-4 text-[#93C5FD] shrink-0" />
+            Specificity Level (PI-7): <strong className="text-white">{pathway.specificityUsed}</strong>
           </span>
-          <span className="font-mono text-[10px]">{pathway.version}</span>
+          <span className="font-mono text-[11px]">{pathway.version}</span>
         </div>
-      </section>
+      </header>
 
       {/* =====================================================================
           UNSUPPORTED PATHWAY HONEST FALLBACK BANNER (Rule PI-8)
          ===================================================================== */}
       {!pathway.isSupported && (
-        <div className="rounded-2xl bg-amber-50 border-2 border-amber-300 p-3.5 space-y-2">
-          <div className="flex items-center gap-2 text-xs font-bold text-amber-950">
-            <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
+        <div className="bg-amber-50 border-2 border-amber-500 p-4 space-y-2">
+          <div className="flex items-center gap-2 text-sm font-bold text-amber-950">
+            <AlertTriangle className="w-4 h-4 text-amber-800 shrink-0" />
             <span>Unsupported Specific Pathway — Generic Guided Plan Active (Rule PI-8)</span>
           </div>
-          <p className="text-xs text-amber-900 leading-relaxed">{pathway.overview}</p>
+          <p className="text-sm text-amber-950 leading-relaxed">{pathway.overview}</p>
         </div>
       )}
 
       {/* =====================================================================
           THE 9 MULTIDIMENSIONAL DIFFICULTY DIMENSIONS (Rules PI-3 & PI-4, K7)
-          Never output "this career is hard" — always specific challenges linked to a gap/task.
          ===================================================================== */}
-      <section className="rounded-2xl bg-white border border-stone-200 p-3.5 space-y-3 shadow-sm">
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-800">
-              <Grid className="w-3.5 h-3.5 text-emerald-800" />
-              <span>9-Dimension Pathway Analysis (PI-3 &amp; PI-4)</span>
-            </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              Keynote K7: Never say &ldquo;this career is hard.&rdquo; Here are the 9 specific challenges to plan around, each linked to a gap or task.
-            </p>
+      <section className="bg-white border-2 border-[#14161A] p-4 sm:p-5 space-y-4">
+        <div>
+          <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-[#14161A]">
+            <Grid className="w-4 h-4 text-[#1D4ED8] shrink-0" />
+            <h2>9-Dimension Pathway Analysis (PI-3 &amp; PI-4)</h2>
           </div>
+          <p className="text-xs sm:text-sm text-[#4B5563] mt-1">
+            Keynote K7: Never say &ldquo;this career is hard.&rdquo; Here are the 9 specific challenges to plan around, each linked to a gap or task.
+          </p>
         </div>
 
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
           {pathway.dimensions.map((dim, idx) => {
             const linkedGap = gaps.find((g) => g.requirementId === dim.linkedRequirementId);
             return (
               <div
                 key={dim.dimension}
-                className="p-3 rounded-xl bg-stone-50/90 border border-stone-200/90 space-y-1.5"
+                className="p-3.5 bg-[#F9F9F7] border border-[#14161A] flex flex-col justify-between gap-2.5"
               >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-bold text-slate-900">
-                    {idx + 1}. {dim.dimension}
-                  </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white border border-stone-200 text-slate-600">
-                    {dim.planningHorizonNote}
-                  </span>
+                <div className="space-y-1.5">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-sm font-extrabold text-[#14161A]">
+                      {idx + 1}. {dim.dimension}
+                    </span>
+                    <span className="text-[11px] font-mono px-2 py-0.5 bg-white border border-[#14161A] text-[#14161A]">
+                      {dim.planningHorizonNote}
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#4B5563] italic">{dim.whatItExamines}</p>
+                  <p className="text-sm text-[#14161A] leading-relaxed font-medium">
+                    {dim.specificChallenge}
+                  </p>
                 </div>
-                <p className="text-[11px] text-slate-500 italic">{dim.whatItExamines}</p>
-                <p className="text-xs text-slate-800 leading-relaxed font-medium">
-                  {dim.specificChallenge}
-                </p>
                 {linkedGap && (
-                  <div className="pt-1 flex items-center justify-between text-[11px]">
-                    <span className="text-slate-600 truncate">
-                      Linked Requirement:{' '}
-                      <strong className="text-slate-800">{linkedGap.requirementTitle}</strong>
+                  <div className="pt-2 border-t border-[#D6D5CE] flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <span className="text-[#4B5563] truncate">
+                      Linked:{' '}
+                      <strong className="text-[#14161A]">{linkedGap.requirementTitle}</strong>
                     </span>
                     <button
                       onClick={() => setActiveTab('roadmap')}
-                      className="inline-flex items-center gap-0.5 text-emerald-800 font-semibold hover:underline shrink-0 ml-2"
+                      className="min-h-[44px] px-2.5 inline-flex items-center gap-1 text-[#1D4ED8] font-mono font-bold hover:underline shrink-0"
                     >
                       <span>Plan Task</span>
-                      <ArrowRight className="w-3 h-3" />
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 )}
@@ -346,62 +349,66 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
       {/* =====================================================================
           STRUCTURED PATHWAY REQUIREMENTS & VERIFICATION PROVENANCE (PI-2, PI-6)
          ===================================================================== */}
-      <section className="rounded-2xl bg-white border border-stone-200 p-3.5 space-y-3 shadow-sm">
+      <section className="bg-white border-2 border-[#14161A] p-4 sm:p-5 space-y-4">
         <div>
-          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-800">
-            <FileCheck2 className="w-3.5 h-3.5 text-emerald-800" />
-            <span>Structured Pathway Requirements (Rules PI-2 &amp; PI-6)</span>
+          <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-[#14161A]">
+            <FileCheck2 className="w-4 h-4 text-[#1D4ED8] shrink-0" />
+            <h2>Structured Pathway Requirements (Rules PI-2 &amp; PI-6)</h2>
           </div>
-          <p className="text-[11px] text-slate-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-[#4B5563] mt-1">
             Maintained as structured, versioned data records. The AI never invents or alters requirements. Stale items display an explicit warning.
           </p>
         </div>
 
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {pathway.requirements.map((req) => {
             const gap = gaps.find((g) => g.requirementId === req.id);
             return (
               <div
                 key={req.id}
-                className="rounded-xl border border-stone-200 p-3 space-y-2.5 bg-white"
+                className="border-2 border-[#14161A] p-4 space-y-3 bg-white flex flex-col justify-between"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-800">
-                      {req.type}
-                    </span>
-                    <h4 className="text-xs font-bold text-slate-900 mt-0.5">{req.title}</h4>
-                  </div>
-                  {gap && (
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0 border ${
-                        gap.status === 'Evidenced'
-                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                          : gap.status === 'Declared Only'
-                          ? 'bg-amber-50 text-amber-800 border-amber-200'
-                          : 'bg-rose-50 text-rose-800 border-rose-200'
-                      }`}
-                    >
-                      {gap.status}
-                    </span>
-                  )}
-                </div>
-
-                <p className="text-xs text-slate-600 leading-relaxed">{req.description}</p>
-
-                <div className="text-[11px] text-slate-700 bg-stone-50 p-2 rounded-lg border border-stone-200/80 space-y-1">
-                  <div>
-                    <strong>Deadline / Window:</strong>{' '}
-                    {req.isDeadlineVerified ? (
-                      req.deadline
-                    ) : (
-                      <span className="text-amber-800 font-semibold">
-                        {req.deadline} (Verification required — OP-5)
+                <div className="space-y-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <h3 className="text-sm sm:text-base font-extrabold text-[#14161A]">
+                        {req.title}
+                      </h3>
+                      <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#1D4ED8] block mt-0.5">
+                        {req.type}
+                      </span>
+                    </div>
+                    {gap && (
+                      <span
+                        className={`px-2.5 py-1 text-[11px] font-mono font-bold uppercase shrink-0 border ${
+                          gap.status === 'Evidenced'
+                            ? 'bg-emerald-50 text-[#047857] border-[#047857]'
+                            : gap.status === 'Declared Only'
+                            ? 'bg-amber-50 text-amber-900 border-amber-500'
+                            : 'bg-rose-50 text-[#D92B2B] border-[#D92B2B]'
+                        }`}
+                      >
+                        {gap.status}
                       </span>
                     )}
                   </div>
-                  <div>
-                    <strong>Evidence Needed:</strong> {req.evidenceNeeded}
+
+                  <p className="text-sm text-[#4B5563] leading-relaxed">{req.description}</p>
+
+                  <div className="text-xs sm:text-sm text-[#14161A] bg-[#F2F1EC] p-3 border border-[#D6D5CE] space-y-1">
+                    <div>
+                      <strong>Deadline / Window:</strong>{' '}
+                      {req.isDeadlineVerified ? (
+                        req.deadline
+                      ) : (
+                        <span className="text-amber-900 font-bold">
+                          {req.deadline} (Verification required — OP-5)
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <strong>Evidence Needed:</strong> {req.evidenceNeeded}
+                    </div>
                   </div>
                 </div>
 
