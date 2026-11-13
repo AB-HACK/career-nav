@@ -44,7 +44,7 @@ export const ProgressivePromptCard: React.FC = () => {
 
       <div className="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider text-[#D92B2B] font-bold">
         <HelpCircle className="w-3.5 h-3.5 shrink-0" />
-        <span>Progressive Career Identity · Rule CI-2</span>
+        <span>Career Identity Question</span>
       </div>
 
       {/* Mandatory Reason Sentence per CI-2 */}
@@ -59,7 +59,7 @@ export const ProgressivePromptCard: React.FC = () => {
           <div className="flex items-start gap-2 text-sm text-amber-950">
             <Lock className="w-4 h-4 text-amber-800 shrink-0 mt-0.5" />
             <span>
-              <strong>Consent required (Rule CI-7):</strong> Constraint data (
+              <strong>Consent required:</strong> Constraint data (
               {nextQuestion.constraintSubType}) is sensitive and used strictly to
               filter out ineligible opportunities.
             </span>
@@ -100,7 +100,7 @@ export const ProgressivePromptCard: React.FC = () => {
       {nextQuestion.requiresConsent && !needsConsent && (
         <div className="flex items-center gap-1.5 text-[11px] font-mono text-[#4B5563]">
           <ShieldCheck className="w-3.5 h-3.5 text-[#047857] shrink-0" />
-          <span>Consent active (CI-7) — withdrawable anytime in Profile &amp; Settings.</span>
+          <span>Consent active — you can withdraw this anytime in Identity &amp; Settings.</span>
         </div>
       )}
     </section>

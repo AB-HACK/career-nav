@@ -38,20 +38,31 @@ export const ProfileSettingsView: React.FC = () => {
   const [newDetail, setNewDetail] = useState('');
   const [newCategory, setNewCategory] = useState<IdentityCategory>('skill');
   const [newMatchTag, setNewMatchTag] = useState('practical-experience');
+  const [itemFormError, setItemFormError] = useState<string | null>(null);
+  const [itemFormSuccess, setItemFormSuccess] = useState<string | null>(null);
+  const [confirmDeleteData, setConfirmDeleteData] = useState(false);
   const [exportStatus, setExportStatus] = useState<string | null>(null);
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle.trim()) return;
+    const trimmed = newTitle.trim();
+    if (!trimmed) {
+      setItemFormError('Enter a title for this skill, experience, or achievement.');
+      setItemFormSuccess(null);
+      return;
+    }
     addOrUpdateIdentityItem({
       category: newCategory,
-      title: newTitle.trim(),
+      title: trimmed,
       detail: newDetail.trim() || 'Added directly in Career Identity wallet',
       matchTag: newMatchTag,
       status: 'declared',
     });
     setNewTitle('');
     setNewDetail('');
+    setItemFormError(null);
+    setItemFormSuccess(`Added "${trimmed}" to your Career Identity.`);
+    setTimeout(() => setItemFormSuccess(null), 4000);
   };
 
   // CI-6: Export all profile data as JSON
@@ -73,7 +84,7 @@ export const ProfileSettingsView: React.FC = () => {
     a.download = `north-career-identity-${user.id}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    setExportStatus('Profile JSON exported successfully (Rule CI-6).');
+    setExportStatus('Profile JSON exported.');
     setTimeout(() => setExportStatus(null), 4000);
   };
 
@@ -86,10 +97,10 @@ export const ProfileSettingsView: React.FC = () => {
         </h1>
         <div className="flex items-center gap-1.5 type-label text-[#93C5FD]">
           <UserCheck className="w-3.5 h-3.5 shrink-0" />
-          <span>Engine 1 · Living Career Identity &amp; Settings (CI-3..7, VO-4)</span>
+          <span>Living Career Identity &amp; Settings</span>
         </div>
         <p className="type-dark-body text-[#D1D5DB] pt-1">
-          Keynote K5 &amp; K6: Your Career Identity learns from what you complete and tracks Declared vs. Evidenced proof. Revisit your Value Orientation weights anytime.
+          Your Career Identity records what you complete and separates self-declared items from verified proof. Adjust your Value Orientation weights anytime.
         </p>
       </header>
 
@@ -104,7 +115,7 @@ export const ProfileSettingsView: React.FC = () => {
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#D6D5CE] pb-3">
             <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-[#14161A]">
               <Sliders className="w-4 h-4 text-[#1D4ED8] shrink-0" />
-              <h2>Value Orientation Weighting Layer (VO-4 &amp; VO-5)</h2>
+              <h2>Value Orientation Weights</h2>
             </div>
             <span className="text-xs font-mono px-2.5 py-1 bg-[#EFF6FF] text-[#1D4ED8] font-bold border border-[#1D4ED8]">
               {valueOrientation.archetype}
@@ -112,7 +123,7 @@ export const ProfileSettingsView: React.FC = () => {
           </div>
 
           <p className="text-sm text-[#4B5563] leading-relaxed">
-            Rule VO-5: Changing your orientation updates Leverage scores and task priorities immediately, while leaving your career goal and pathway requirements 100% untouched.
+            Changing your weights updates opportunity scores and task rankings immediately without altering your career goal or pathway requirements.
           </p>
 
           {/* 4 Archetype Buttons */}
@@ -213,7 +224,7 @@ export const ProfileSettingsView: React.FC = () => {
         <section className="bg-white border-2 border-[#14161A] p-4 sm:p-5 space-y-4">
           <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-[#14161A] border-b border-[#D6D5CE] pb-3">
             <Clock className="w-4 h-4 text-[#1D4ED8] shrink-0" />
-            <h2>Capacity &amp; Target Horizon (Rules EX-8 &amp; EX-9)</h2>
+            <h2>Weekly Capacity &amp; Timeline</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div>
@@ -229,14 +240,18 @@ export const ProfileSettingsView: React.FC = () => {
                 min={2}
                 max={40}
                 value={user.weeklyHoursAvailable}
-                onChange={(e) =>
-                  updateCapacitySettings(
-                    Number(e.target.value) || 6,
-                    user.targetMonthsToLaunch
-                  )
-                }
-                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] font-mono text-sm bg-[#F9F9F7]"
+                onChange={(e) => {
+                  const parsed = Math.round(Number(e.target.value));
+                  const clamped = Number.isFinite(parsed)
+                    ? Math.min(40, Math.max(2, parsed))
+                    : 6;
+                  updateCapacitySettings(clamped, user.targetMonthsToLaunch);
+                }}
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] font-mono text-base sm:text-sm bg-[#F9F9F7]"
               />
+              <span className="text-[11px] font-mono text-[#4B5563] block mt-1">
+                Allowed range: 2–40 hours/week
+              </span>
             </div>
             <div>
               <label
@@ -251,18 +266,22 @@ export const ProfileSettingsView: React.FC = () => {
                 min={3}
                 max={60}
                 value={user.targetMonthsToLaunch}
-                onChange={(e) =>
-                  updateCapacitySettings(
-                    user.weeklyHoursAvailable,
-                    Number(e.target.value) || 12
-                  )
-                }
-                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] font-mono text-sm bg-[#F9F9F7]"
+                onChange={(e) => {
+                  const parsed = Math.round(Number(e.target.value));
+                  const clamped = Number.isFinite(parsed)
+                    ? Math.min(60, Math.max(3, parsed))
+                    : 12;
+                  updateCapacitySettings(user.weeklyHoursAvailable, clamped);
+                }}
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] font-mono text-base sm:text-sm bg-[#F9F9F7]"
               />
+              <span className="text-[11px] font-mono text-[#4B5563] block mt-1">
+                Allowed range: 3–60 months
+              </span>
             </div>
           </div>
           <p className="text-xs sm:text-sm text-[#4B5563]">
-            Tip: Set Target Months to <strong>4</strong> to see the non-intrusive <strong>Rule EX-8</strong> Strategic Timeline Pushback on the Home screen.
+            Used to check whether your target timeline is realistic at your current weekly hours.
           </p>
         </section>
       </div>
@@ -274,7 +293,7 @@ export const ProfileSettingsView: React.FC = () => {
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#D6D5CE] pb-3">
           <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-[#14161A]">
             <FileCheck2 className="w-4 h-4 text-[#1D4ED8] shrink-0" />
-            <h2>Career Identity &amp; Evidence Wallet (CI-3 &amp; CI-4)</h2>
+            <h2>Career Identity &amp; Proof Wallet</h2>
           </div>
           <span className="text-xs font-mono font-bold text-[#14161A]">
             {identityItems.filter((i) => i.status === 'evidenced').length}/{identityItems.length} Evidenced
@@ -336,7 +355,7 @@ export const ProfileSettingsView: React.FC = () => {
                             }
                             className="min-h-[44px] px-2.5 py-1.5 bg-white hover:bg-[#EFF6FF] border border-[#14161A] text-[11px] font-mono font-bold text-[#14161A]"
                           >
-                            + Attach {evType} (CI-4)
+                            + Attach {evType}
                           </button>
                         )
                       )}
@@ -362,43 +381,74 @@ export const ProfileSettingsView: React.FC = () => {
         {/* Add New Profile Item Form */}
         <form
           onSubmit={handleAddItem}
+          noValidate
           className="pt-4 border-t-2 border-[#14161A] space-y-3"
         >
           <span className="text-sm font-extrabold text-[#14161A] block">
             + Add Skill, Experience, or Achievement
           </span>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <select
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value as IdentityCategory)}
-              className="min-h-[44px] px-3 py-2 border-2 border-[#14161A] text-sm bg-white"
-            >
-              <option value="education">Education</option>
-              <option value="experience">Experience</option>
-              <option value="skill">Skill</option>
-              <option value="achievement">Achievement</option>
-              <option value="interest">Interest</option>
-            </select>
-            <select
-              value={newMatchTag}
-              onChange={(e) => setNewMatchTag(e.target.value)}
-              className="min-h-[44px] px-3 py-2 border-2 border-[#14161A] text-sm bg-white"
-            >
-              <option value="practical-experience">Closes: Practical / Portfolio</option>
-              <option value="licensing-exam">Closes: Licensing / Exam</option>
-              <option value="research-output">Closes: Research / Output</option>
-              <option value="language-verified">Closes: Language / Visa</option>
-              <option value="degree-completed">Closes: Primary Degree</option>
-            </select>
+            <div>
+              <label
+                htmlFor="identity-category"
+                className="block text-xs font-semibold text-[#14161A] mb-1"
+              >
+                Category
+              </label>
+              <select
+                id="identity-category"
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value as IdentityCategory)}
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-base sm:text-sm bg-white"
+              >
+                <option value="education">Education</option>
+                <option value="experience">Experience</option>
+                <option value="skill">Skill</option>
+                <option value="achievement">Achievement</option>
+                <option value="interest">Interest</option>
+              </select>
+            </div>
+            <div>
+              <label
+                htmlFor="identity-match-tag"
+                className="block text-xs font-semibold text-[#14161A] mb-1"
+              >
+                Requirement Area Covered
+              </label>
+              <select
+                id="identity-match-tag"
+                value={newMatchTag}
+                onChange={(e) => setNewMatchTag(e.target.value)}
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-base sm:text-sm bg-white"
+              >
+                <option value="practical-experience">Closes: Practical / Portfolio</option>
+                <option value="licensing-exam">Closes: Licensing / Exam</option>
+                <option value="research-output">Closes: Research / Output</option>
+                <option value="language-verified">Closes: Language / Visa</option>
+                <option value="degree-completed">Closes: Primary Degree</option>
+              </select>
+            </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-2.5">
-            <input
-              type="text"
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              placeholder="e.g., Published Clinical Audit / AWS Certified / Law Externship"
-              className="min-h-[44px] flex-1 px-3 py-2 border-2 border-[#14161A] text-sm bg-white"
-            />
+            <div className="flex-1 min-w-0">
+              <label htmlFor="identity-title" className="sr-only">
+                Item title
+              </label>
+              <input
+                id="identity-title"
+                type="text"
+                maxLength={120}
+                value={newTitle}
+                onChange={(e) => {
+                  setNewTitle(e.target.value);
+                  if (itemFormError) setItemFormError(null);
+                }}
+                aria-invalid={itemFormError ? true : undefined}
+                aria-describedby={itemFormError ? 'identity-title-error' : undefined}
+                placeholder="e.g., Published Clinical Audit / AWS Certified / Law Externship"
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-base sm:text-sm bg-white"
+              />
+            </div>
             <button
               type="submit"
               className="min-h-[44px] px-5 py-2.5 bg-[#14161A] hover:bg-[#1D4ED8] text-white text-xs font-mono font-bold uppercase flex items-center justify-center gap-1.5 shrink-0 transition-colors"
@@ -407,6 +457,20 @@ export const ProfileSettingsView: React.FC = () => {
               <span>Add to Living Career Identity</span>
             </button>
           </div>
+          {itemFormError && (
+            <p
+              id="identity-title-error"
+              role="alert"
+              className="text-xs font-semibold text-[#D92B2B]"
+            >
+              {itemFormError}
+            </p>
+          )}
+          {itemFormSuccess && (
+            <p role="status" className="text-xs font-semibold text-[#047857]">
+              {itemFormSuccess}
+            </p>
+          )}
         </form>
       </section>
 
@@ -416,7 +480,7 @@ export const ProfileSettingsView: React.FC = () => {
       <section className="bg-white border-2 border-[#14161A] p-4 sm:p-5 space-y-4">
         <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-[#14161A] border-b border-[#D6D5CE] pb-3">
           <Shield className="w-4 h-4 text-[#1D4ED8] shrink-0" />
-          <h2>Consent &amp; Data Control (Rules CI-6 &amp; CI-7)</h2>
+          <h2>Privacy Consent &amp; Data Controls</h2>
         </div>
         <p className="text-sm text-[#4B5563] leading-relaxed">
           Constraint data (finances, visa status, geographic access, barriers) requires explicit per-category consent and is used strictly to filter recommendations (NDPA / KDPA / POPIA / GDPR aligned).
@@ -481,19 +545,43 @@ export const ProfileSettingsView: React.FC = () => {
         {/* Export & Delete Buttons (CI-6) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
           <button
+            type="button"
             onClick={handleExportProfile}
             className="min-h-[44px] py-2.5 px-4 border-2 border-[#14161A] bg-white hover:bg-[#F2F1EC] text-[#14161A] text-xs font-mono font-bold uppercase flex items-center justify-center gap-2 transition-colors"
           >
             <Download className="w-4 h-4 shrink-0" />
-            <span>Export JSON (CI-6)</span>
+            <span>Export Profile JSON</span>
           </button>
-          <button
-            onClick={resetOrDeleteProfileData}
-            className="min-h-[44px] py-2.5 px-4 border-2 border-[#D92B2B] bg-rose-50 hover:bg-[#D92B2B] hover:text-white text-[#D92B2B] text-xs font-mono font-bold uppercase flex items-center justify-center gap-2 transition-colors"
-          >
-            <Trash2 className="w-4 h-4 shrink-0" />
-            <span>Delete Data (CI-6)</span>
-          </button>
+          {!confirmDeleteData ? (
+            <button
+              type="button"
+              onClick={() => setConfirmDeleteData(true)}
+              className="min-h-[44px] py-2.5 px-4 border-2 border-[#D92B2B] bg-rose-50 hover:bg-[#D92B2B] hover:text-white text-[#D92B2B] text-xs font-mono font-bold uppercase flex items-center justify-center gap-2 transition-colors"
+            >
+              <Trash2 className="w-4 h-4 shrink-0" />
+              <span>Delete All Data</span>
+            </button>
+          ) : (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  resetOrDeleteProfileData();
+                  setConfirmDeleteData(false);
+                }}
+                className="min-h-[44px] flex-1 py-2.5 px-3 border-2 border-[#D92B2B] bg-[#D92B2B] hover:bg-[#B91C1C] text-white text-xs font-mono font-bold uppercase transition-colors"
+              >
+                Confirm Delete All Data
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDeleteData(false)}
+                className="min-h-[44px] px-3 py-2.5 border-2 border-[#14161A] bg-white hover:bg-[#F2F1EC] text-[#14161A] text-xs font-mono font-bold uppercase transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
 
         <button

@@ -46,6 +46,7 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
   const [customGoalInput, setCustomGoalInput] = useState(
     user.customGoalText || 'Space Law & Orbital Policy'
   );
+  const [customGoalError, setCustomGoalError] = useState<string | null>(null);
 
   const openGaps = gaps.filter((g) => g.status !== 'Evidenced');
   const topNextTask = tasks.find((t) => t.status !== 'Completed' && t.status !== 'Dropped');
@@ -63,7 +64,7 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
             </h1>
             <div className="flex items-center gap-1.5 type-label text-[#93C5FD] mt-1.5">
               <Compass className="w-3.5 h-3.5 shrink-0" />
-              <span>Engine 3 · Goal Framing Panel (Rule SM-5)</span>
+              <span>Goal Framing &amp; Regulatory Pathway</span>
             </div>
           </div>
           <button
@@ -71,7 +72,7 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
             className="min-h-[44px] inline-flex items-center gap-2 px-3.5 py-2 bg-[#1F242D] hover:bg-[#2A2E37] border border-[#323846] text-xs font-mono font-bold text-[#93C5FD] transition-colors shrink-0"
           >
             <SlidersHorizontal className="w-4 h-4 shrink-0" />
-            <span>Change Goal / Destination (PI-1)</span>
+            <span>Change Goal or Destination</span>
           </button>
         </div>
 
@@ -79,14 +80,18 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
         {showDestinationSwitcher && (
           <div className="bg-[#1F242D] border border-[#323846] p-4 space-y-3">
             <div className="text-xs text-[#93C5FD] font-semibold">
-              Test PI-1 &amp; RM-6: Two users with the same goal and different destinations get different pathways (history preserved).
+              Changing your goal or destination loads its exact regulatory pathway while keeping your completed history.
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-mono uppercase text-[#D1D5DB] mb-1.5">
-                  Target Career Goal (13 Curated Fields + PI-8 Unsupported Test)
+                <label
+                  htmlFor="pathway-goal-select"
+                  className="block text-[11px] font-mono uppercase text-[#D1D5DB] mb-1.5"
+                >
+                  Target Career Field
                 </label>
                 <select
+                  id="pathway-goal-select"
                   value={user.goalCareerId}
                   onChange={(e) =>
                     updateGoalAndDestination(
@@ -97,7 +102,7 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
                       user.engineeringTrack
                     )
                   }
-                  className="min-h-[44px] w-full px-3 py-2 bg-[#14161A] border border-[#323846] text-sm text-white"
+                  className="min-h-[44px] w-full px-3 py-2 bg-[#14161A] border border-[#323846] text-base sm:text-sm text-white"
                 >
                   {CAREER_FIELDS.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -108,10 +113,14 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-mono uppercase text-[#D1D5DB] mb-1.5">
-                  Target Destination Country / Hub (10 Contexts)
+                <label
+                  htmlFor="pathway-destination-select"
+                  className="block text-[11px] font-mono uppercase text-[#D1D5DB] mb-1.5"
+                >
+                  Target Destination Country or Hub
                 </label>
                 <select
+                  id="pathway-destination-select"
                   value={user.destinationId}
                   onChange={(e) =>
                     updateGoalAndDestination(
@@ -122,7 +131,7 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
                       user.engineeringTrack
                     )
                   }
-                  className="min-h-[44px] w-full px-3 py-2 bg-[#14161A] border border-[#323846] text-sm text-white"
+                  className="min-h-[44px] w-full px-3 py-2 bg-[#14161A] border border-[#323846] text-base sm:text-sm text-white"
                 >
                   {DESTINATIONS.map((d) => (
                     <option key={d.id} value={d.id}>
@@ -168,30 +177,51 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
 
             {user.goalCareerId === 'custom-unsupported' && (
               <div>
-                <label className="block text-[11px] font-mono uppercase text-amber-300 mb-1.5">
-                  Custom Unlisted Career Goal (Rule PI-8 Fallback)
+                <label
+                  htmlFor="pathway-custom-goal-input"
+                  className="block text-[11px] font-mono uppercase text-amber-300 mb-1.5"
+                >
+                  Custom Career Goal
                 </label>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <input
+                    id="pathway-custom-goal-input"
                     type="text"
+                    maxLength={100}
                     value={customGoalInput}
-                    onChange={(e) => setCustomGoalInput(e.target.value)}
-                    className="min-h-[44px] flex-1 px-3 py-2 bg-[#14161A] border border-amber-400 text-sm text-white"
+                    onChange={(e) => {
+                      setCustomGoalInput(e.target.value);
+                      if (customGoalError) setCustomGoalError(null);
+                    }}
+                    aria-invalid={customGoalError ? true : undefined}
+                    className="min-h-[44px] flex-1 px-3 py-2 bg-[#14161A] border border-amber-400 text-base sm:text-sm text-white"
                   />
                   <button
-                    onClick={() =>
+                    type="button"
+                    onClick={() => {
+                      const trimmed = customGoalInput.trim();
+                      if (!trimmed) {
+                        setCustomGoalError('Enter a custom career goal before applying.');
+                        return;
+                      }
+                      setCustomGoalError(null);
                       updateGoalAndDestination(
                         'custom-unsupported',
                         user.destinationId,
                         user.institutionOrCity,
-                        customGoalInput
-                      )
-                    }
+                        trimmed
+                      );
+                    }}
                     className="min-h-[44px] px-4 py-2 bg-amber-400 text-[#14161A] text-xs font-mono font-bold uppercase"
                   >
                     Apply
                   </button>
                 </div>
+                {customGoalError && (
+                  <p role="alert" className="text-xs font-semibold text-amber-300 mt-1.5">
+                    {customGoalError}
+                  </p>
+                )}
               </div>
             )}
           </div>
@@ -268,7 +298,7 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
             onClick={() => setActiveTab('roadmap')}
             className="min-h-[44px] px-4 py-2 bg-[#D92B2B] hover:bg-[#B91C1C] text-white text-xs font-mono font-bold uppercase shrink-0 transition-colors"
           >
-            Go →
+            Open Roadmap →
           </button>
         </div>
 
@@ -276,7 +306,7 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-[#D1D5DB] pt-2 border-t border-[#2A2E37]">
           <span className="inline-flex items-center gap-1.5">
             <MapPin className="w-4 h-4 text-[#93C5FD] shrink-0" />
-            Specificity Level (PI-7): <strong className="text-white">{pathway.specificityUsed}</strong>
+            Pathway Specificity: <strong className="text-white">{pathway.specificityUsed}</strong>
           </span>
           <span className="font-mono text-[11px]">{pathway.version}</span>
         </div>
@@ -289,7 +319,7 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
         <div className="bg-amber-50 border-2 border-amber-500 p-4 space-y-2">
           <div className="flex items-center gap-2 text-sm font-bold text-amber-950">
             <AlertTriangle className="w-4 h-4 text-amber-800 shrink-0" />
-            <span>Unsupported Specific Pathway — Generic Guided Plan Active (Rule PI-8)</span>
+            <span>Guided Fallback Plan (No Verified Pathway Yet)</span>
           </div>
           <p className="text-sm text-amber-950 leading-relaxed">{pathway.overview}</p>
         </div>
@@ -302,10 +332,10 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
         <div>
           <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-[#14161A]">
             <Grid className="w-4 h-4 text-[#1D4ED8] shrink-0" />
-            <h2>9-Dimension Pathway Analysis (PI-3 &amp; PI-4)</h2>
+            <h2>9-Dimension Pathway Reality</h2>
           </div>
           <p className="text-xs sm:text-sm text-[#4B5563] mt-1">
-            Keynote K7: Never say &ldquo;this career is hard.&rdquo; Here are the 9 specific challenges to plan around, each linked to a gap or task.
+            Nine concrete planning dimensions for this corridor, each linked to a requirement gap or task.
           </p>
         </div>
 
@@ -359,10 +389,10 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
         <div>
           <div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wider text-[#14161A]">
             <FileCheck2 className="w-4 h-4 text-[#1D4ED8] shrink-0" />
-            <h2>Structured Pathway Requirements (Rules PI-2 &amp; PI-6)</h2>
+            <h2>Verified Pathway Requirements</h2>
           </div>
           <p className="text-xs sm:text-sm text-[#4B5563] mt-1">
-            Maintained as structured, versioned data records. The AI never invents or alters requirements. Stale items display an explicit warning.
+            Structured, versioned regulatory records. Outdated records display a verification warning.
           </p>
         </div>
 
@@ -408,7 +438,7 @@ export const PathwayView: React.FC<PathwayViewProps> = ({
                         req.deadline
                       ) : (
                         <span className="text-amber-900 font-bold">
-                          {req.deadline} (Verification required — OP-5)
+                          {req.deadline} (Verification required)
                         </span>
                       )}
                     </div>

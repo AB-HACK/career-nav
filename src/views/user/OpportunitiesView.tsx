@@ -92,20 +92,20 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
             <h1 className="type-display text-white">
-              Filter, Do Not List (Keynote K10)
+              Curated Opportunity Funnel
             </h1>
             <div className="flex items-center gap-1.5 type-label text-[#93C5FD] mt-1.5">
               <Filter className="w-3.5 h-3.5 shrink-0" />
-              <span>Engine 5 · 7-Stage Funnel &amp; Leverage (OP-2, LV-1)</span>
+              <span>7-Stage Eligibility &amp; Fit Filter</span>
             </div>
           </div>
           <span className="text-xs font-mono bg-[#1F242D] border border-[#323846] px-3 py-1.5 text-white shrink-0">
-            Hard Cap: {OPPORTUNITY_CURATED_CAP} (OP-9)
+            Max {OPPORTUNITY_CURATED_CAP} Shown
           </span>
         </div>
 
         <p className="type-dark-body text-[#CBD5E1]">
-          Scored against your <strong>{valueOrientation.archetype}</strong> weights. Tap any score badge to inspect the exact calculation table (Rule LV-6).
+          Ranked using your <strong>{valueOrientation.archetype}</strong> weights. Select any score badge to inspect the full calculation.
         </p>
 
         {/* Visual 7-Stage Funnel Bar */}
@@ -113,7 +113,7 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
           {[
             { label: '1. Everything Available', count: stageCounts.s1_available, width: 'w-full', tone: 'bg-[#14161A] text-[#CBD5E1]' },
             { label: '2. Relevant to Your Career', count: stageCounts.s2_relevant, width: 'w-11/12', tone: 'bg-[#1B2230] text-[#CBD5E1]' },
-            { label: '3. Eligible for You (OP-3)', count: stageCounts.s3_eligible, width: 'w-10/12', tone: 'bg-[#1E293B] text-[#E2E8F0]' },
+            { label: '3. Eligible for You', count: stageCounts.s3_eligible, width: 'w-10/12', tone: 'bg-[#1E293B] text-[#E2E8F0]' },
             { label: '4. Realistically Accessible', count: stageCounts.s4_accessible, width: 'w-9/12', tone: 'bg-[#1E3A8A]/70 text-[#E2E8F0]' },
             { label: '5. Potentially Valuable (Combo)', count: stageCounts.s5_valuable, width: 'w-8/12', tone: 'bg-[#1E3A8A] text-white' },
             { label: '6. Worth Your Time (Not Low-Fit)', count: stageCounts.s6_worthTime, width: 'w-7/12', tone: 'bg-[#1D4ED8] text-white' },
@@ -211,7 +211,7 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
                   {eo.isImmediateAlertEligible && (
                     <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold uppercase px-2.5 py-1 bg-[#D92B2B] text-white">
                       <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                      Exceptional Alert (LV-5)
+                      Immediate High-Fit Alert
                     </span>
                   )}
                 </div>
@@ -220,7 +220,7 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
                 <button
                   onClick={() => setActiveBreakdownOpportunityId(opportunity.id)}
                   className={`min-h-[44px] inline-flex items-center gap-1.5 px-3 py-2 text-xs font-mono font-bold border-2 transition-colors ${levelColors}`}
-                  title="Tap to open deterministic Score Breakdown (Rule LV-6)"
+                  title="Inspect full score calculation and Value Orientation weights"
                 >
                   <Calculator className="w-4 h-4 shrink-0" />
                   <span>
@@ -253,7 +253,7 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
                 ) : (
                   <span className="font-bold text-amber-900 flex items-center gap-1.5">
                     <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
-                    Verification required (OP-5)
+                    Verification required
                   </span>
                 )}
               </div>
@@ -261,7 +261,7 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
               {/* OP-6 Unverified Cap Notice */}
               {breakdown.wasCappedByVerification && (
                 <div className="bg-amber-50 border-2 border-amber-500 p-3 text-xs sm:text-sm text-amber-950">
-                  <strong>Rule OP-6 Enforced:</strong> Raw score is{' '}
+                  <strong>Score Capped at Normal:</strong> Raw score is{' '}
                   <span className="font-mono font-bold">{breakdown.rawScore.toFixed(2)}</span> (
                   {breakdown.uncappedLevel}), but capped at <strong>Normal</strong> because verification state is{' '}
                   <code className="font-mono bg-amber-100 px-1">{opportunity.verification.state}</code>.
@@ -278,7 +278,7 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
                 <div className="bg-rose-50 border-2 border-[#D92B2B] p-3 text-xs sm:text-sm text-rose-950 space-y-1">
                   <div className="font-bold flex items-center gap-1.5">
                     <XCircle className="w-4 h-4 text-[#D92B2B] shrink-0" />
-                    <span>Filtered at Funnel Stage 3 — Eligibility Check (Rule OP-3):</span>
+                    <span>Ineligible at Stage 3:</span>
                   </div>
                   {funnel.ineligibleReasons.map((reason, i) => (
                     <p key={i}>{reason}</p>
@@ -291,7 +291,7 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
                 opportunity.lowFitReasons.length > 0 && (
                   <div className="bg-[#F2F1EC] border border-[#D6D5CE] p-3 text-xs sm:text-sm text-[#4B5563] space-y-1">
                     <strong className="text-[#14161A] block">
-                      Low-Fit / Cost Tradeoff Reasons (Rule LV-8):
+                      Tradeoffs &amp; Fit Notes:
                     </strong>
                     <ul className="list-disc list-inside space-y-0.5 text-xs">
                       {opportunity.lowFitReasons.map((r, i) => (
@@ -315,7 +315,7 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
               <div className="pt-3 border-t-2 border-[#14161A] space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#14161A]">
-                    Execution Lifecycle (Rules EX-1 &amp; EX-2)
+                    Application Stage
                   </span>
                   <span className="text-xs font-mono text-[#1D4ED8] font-bold">
                     Status: {lifecycleStatus}
@@ -345,7 +345,7 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
                   <div className="bg-[#EFF6FF] border border-[#1D4ED8] p-3 flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm text-[#14161A]">
                     <span className="flex items-center gap-1.5 font-medium">
                       <CheckCircle2 className="w-4 h-4 text-[#1D4ED8] shrink-0" />
-                      {opportunity.prepTaskTemplates.length} prep tasks added to Roadmap (EX-1)
+                      {opportunity.prepTaskTemplates.length} prep tasks added to your Roadmap
                     </span>
                     <button
                       onClick={() => setActiveTab('roadmap')}
@@ -371,7 +371,7 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
                     onClick={() => setActiveBreakdownOpportunityId(opportunity.id)}
                     className="min-h-[44px] px-3 py-2 text-xs font-mono font-bold text-[#1D4ED8] hover:bg-[#EFF6FF] border border-transparent hover:border-[#1D4ED8] transition-colors"
                   >
-                    Inspect Full Score Math (LV-6) →
+                    Inspect Score Breakdown →
                   </button>
                   {!eo.isDismissed && (
                     <button
@@ -384,7 +384,7 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
                       }
                       className="min-h-[44px] px-3 py-2 text-xs font-mono text-[#4B5563] hover:text-[#D92B2B] transition-colors"
                     >
-                      Not for me (Dismiss)
+                      Dismiss Opportunity
                     </button>
                   )}
                 </div>

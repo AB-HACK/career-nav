@@ -48,10 +48,10 @@ export const ExplorerDeciderView: React.FC = () => {
             : 'Decider Mode: Side-by-Side Pathway Comparison'}
         </h1>
         <div className="type-label text-[#93C5FD]">
-          Engine 2 · Career Discovery (SM-1, SM-2, SM-4)
+          Advisory Career Discovery &amp; Comparison
         </div>
         <p className="type-dark-body text-[#D1D5DB]">
-          <strong className="text-white">Keynote K3 (Non-Negotiable):</strong> Assessments and comparisons are advisory information, never a verdict. We never tell a user who wants Dermatology that Public Health suits them better. You control the destination.
+          Assessments and comparisons are strictly advisory. You always choose your own destination.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
@@ -64,7 +64,7 @@ export const ExplorerDeciderView: React.FC = () => {
             }`}
           >
             <Compass className="w-4 h-4 shrink-0" />
-            <span>Explorer (SM-1)</span>
+            <span>Explorer</span>
           </button>
           <button
             onClick={() => setModeTab('Decider')}
@@ -75,7 +75,7 @@ export const ExplorerDeciderView: React.FC = () => {
             }`}
           >
             <Columns className="w-4 h-4 shrink-0" />
-            <span>Decider Compare (SM-2)</span>
+            <span>Decider Compare</span>
           </button>
         </div>
       </header>
@@ -167,7 +167,7 @@ export const ExplorerDeciderView: React.FC = () => {
                       onClick={() => handOffToBuilderMode(career.id)}
                       className="min-h-[44px] flex-1 py-2 px-3 bg-[#14161A] hover:bg-[#D92B2B] text-white text-xs font-mono font-bold uppercase flex items-center justify-center gap-1.5 transition-colors"
                     >
-                      <span>Choose &amp; Build Roadmap (SM-6)</span>
+                      <span>Choose &amp; Build Roadmap</span>
                       <ArrowRight className="w-4 h-4 shrink-0" />
                     </button>
                   </div>
@@ -257,7 +257,7 @@ export const ExplorerDeciderView: React.FC = () => {
                     className="min-h-[44px] w-full py-2.5 px-3 bg-[#14161A] hover:bg-[#D92B2B] text-white text-xs font-mono font-bold uppercase transition-colors flex items-center justify-center gap-1.5"
                   >
                     <CheckCircle2 className="w-4 h-4 shrink-0" />
-                    <span>Commit to {pw.careerTitle} (SM-6)</span>
+                    <span>Choose {pw.careerTitle}</span>
                   </button>
                 </div>
               );
@@ -269,7 +269,7 @@ export const ExplorerDeciderView: React.FC = () => {
       <div className="bg-[#F2F1EC] border border-[#14161A] p-3.5 flex items-center gap-2.5 text-xs sm:text-sm text-[#4B5563]">
         <ShieldCheck className="w-4 h-4 text-[#1D4ED8] shrink-0" />
         <span>
-          <strong className="text-[#14161A]">Rule SM-6 Verified:</strong> Selecting any career above hands your existing profile and Value Orientation directly into the Builder flow with zero data re-entry.
+          <strong className="text-[#14161A]">Seamless Handoff:</strong> Selecting any career moves your existing profile and Value Orientation directly into your active roadmap with zero data re-entry.
         </span>
       </div>
     </div>

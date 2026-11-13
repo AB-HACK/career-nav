@@ -62,6 +62,21 @@ export const PrdSimulatorView: React.FC<PrdSimulatorViewProps> = ({
     'Mission-Driven',
   ];
 
+  const factorRows: Array<{
+    key: keyof OpportunityFacts;
+    label: string;
+    sliderHint: string;
+    kind: 'benefit' | 'cost';
+  }> = [
+    { key: 'gapsClosed', label: 'Gaps closed', sliderHint: 'Sec. 9 = 9', kind: 'benefit' },
+    { key: 'credibility', label: 'Credibility / halo', sliderHint: 'Sec. 9 = 8', kind: 'benefit' },
+    { key: 'funding', label: 'Funding', sliderHint: 'Sec. 9 = 7', kind: 'benefit' },
+    { key: 'networkAndMentor', label: 'Network and mentor', sliderHint: 'Sec. 9 = 8', kind: 'benefit' },
+    { key: 'impactAlignment', label: 'Impact alignment', sliderHint: 'Gap 3 = 8', kind: 'benefit' },
+    { key: 'disruptionCost', label: 'Disruption cost, subtracted', sliderHint: 'Sec. 9 = 7', kind: 'cost' },
+    { key: 'delayToPayoff', label: 'Delay to payoff, subtracted', sliderHint: 'Sec. 9 = 6', kind: 'cost' },
+  ];
+
   // Compute score per archetype using the exact Section 9 formula
   const computeForArchetype = (arch: ArchetypeName) => {
     const w = ARCHETYPE_BASE_WEIGHTS[arch];
@@ -98,15 +113,15 @@ export const PrdSimulatorView: React.FC<PrdSimulatorViewProps> = ({
 
   return (
     <div className="min-h-screen bg-stone-100 text-slate-900">
-      {/* Header */}
-      <header className="bg-[#0F172A] text-white border-b border-slate-800 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center">
+      {/* Header — Full Width */}
+      <header className="bg-[#0F172A] text-white border-b border-slate-800 px-4 sm:px-6 lg:px-8 py-4">
+        <div className="w-full flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center shrink-0">
               <Calculator className="w-5 h-5 text-emerald-400" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-base font-bold tracking-tight">
                   PRD SECTION 9 WORKED EXAMPLE &amp; ACCEPTANCE SIMULATOR
                 </h1>
@@ -120,16 +135,18 @@ export const PrdSimulatorView: React.FC<PrdSimulatorViewProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
+              type="button"
               onClick={() => onNavigateRoute('/curator')}
-              className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition-colors"
+              className="min-h-[40px] px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition-colors"
             >
               Open /curator Queue
             </button>
             <button
+              type="button"
               onClick={() => onNavigateRoute('/')}
-              className="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold flex items-center gap-1.5 transition-colors"
+              className="min-h-[40px] px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold flex items-center gap-1.5 transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Return to User App (/)</span>
@@ -138,7 +155,7 @@ export const PrdSimulatorView: React.FC<PrdSimulatorViewProps> = ({
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto p-6 space-y-6">
+      <main className="w-full px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {triggerBanner && (
           <div className="rounded-xl bg-emerald-900 text-white p-4 flex items-center justify-between shadow-md">
             <div className="flex items-center gap-2 text-xs font-medium">
@@ -199,9 +216,9 @@ export const PrdSimulatorView: React.FC<PrdSimulatorViewProps> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Left: Interactive 0-10 Fact Sliders */}
-            <div className="lg:col-span-4 rounded-xl bg-stone-50 border border-stone-200 p-4 space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[360px_1fr] gap-6 items-start">
+            {/* Left Rail: Interactive 0-10 Fact Sliders */}
+            <div className="rounded-xl bg-stone-50 border border-stone-200 p-4 space-y-3">
               <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-800">
                 <Sliders className="w-3.5 h-3.5 text-emerald-800" />
                 <span>Opportunity Facts (0–10)</span>
@@ -210,22 +227,14 @@ export const PrdSimulatorView: React.FC<PrdSimulatorViewProps> = ({
                 The facts stay the same for every user; only the weights change with Value Orientation.
               </p>
 
-              {(
-                [
-                  { key: 'gapsClosed', label: 'Gaps closed (Sec. 9 = 9)', kind: 'benefit' },
-                  { key: 'credibility', label: 'Credibility / halo (Sec. 9 = 8)', kind: 'benefit' },
-                  { key: 'funding', label: 'Funding (Sec. 9 = 7)', kind: 'benefit' },
-                  { key: 'networkAndMentor', label: 'Network & mentor (Sec. 9 = 8)', kind: 'benefit' },
-                  { key: 'impactAlignment', label: 'Impact alignment (Gap 3 = 8)', kind: 'benefit' },
-                  { key: 'disruptionCost', label: 'Disruption cost (Sec. 9 = 7)', kind: 'cost' },
-                  { key: 'delayToPayoff', label: 'Delay to payoff (Sec. 9 = 6)', kind: 'cost' },
-                ] as Array<{ key: keyof OpportunityFacts; label: string; kind: 'benefit' | 'cost' }>
-              ).map((item) => (
+              {factorRows.map((item) => (
                 <div key={item.key} className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="font-medium text-slate-700">{item.label}</span>
+                  <div className="flex justify-between text-xs gap-2">
+                    <span className="font-medium text-slate-700">
+                      {item.label} ({item.sliderHint})
+                    </span>
                     <span
-                      className={`font-mono font-bold ${
+                      className={`font-mono font-bold tabular-nums ${
                         item.kind === 'benefit' ? 'text-emerald-800' : 'text-rose-700'
                       }`}
                     >
@@ -247,16 +256,17 @@ export const PrdSimulatorView: React.FC<PrdSimulatorViewProps> = ({
               ))}
             </div>
 
-            {/* Right: Side-by-Side Comparison Table (Exact Section 9 Layout) */}
-            <div className="lg:col-span-8 overflow-x-auto">
+            {/* Right: Full-Width Side-by-Side Comparison Table (Exact Section 9 Layout) */}
+            <div className="min-w-0 overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs rounded-xl overflow-hidden border border-stone-200">
                 <thead>
                   <tr className="bg-[#0F172A] text-white">
-                    <th className="py-3 px-3 font-semibold">Factor (Fact Value)</th>
+                    <th className="py-3 px-4 font-semibold min-w-[200px]">Factor (Fact Value)</th>
                     {archetypes.map((arch) => (
-                      <th key={arch} className="py-3 px-3 font-semibold text-right">
+                      <th key={arch} className="py-3 px-4 font-semibold text-right min-w-[130px]">
                         <div>{arch}</div>
                         <button
+                          type="button"
                           onClick={() => {
                             setValueOrientation(arch, {
                               orientation: 0,
@@ -279,100 +289,36 @@ export const PrdSimulatorView: React.FC<PrdSimulatorViewProps> = ({
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-stone-200 bg-white font-mono">
-                  <tr>
-                    <td className="py-2.5 px-3 font-sans font-medium text-slate-800">
-                      Gaps closed ({facts.gapsClosed}) <span className="text-emerald-700">[+]</span>
-                    </td>
-                    {archetypes.map((a) => (
-                      <td key={a} className="py-2.5 px-3 text-right text-slate-700">
-                        {ARCHETYPE_BASE_WEIGHTS[a].gapsClosed.toFixed(2)}{' '}
-                        <span className="text-emerald-700 font-semibold">
-                          (+{(ARCHETYPE_BASE_WEIGHTS[a].gapsClosed * facts.gapsClosed).toFixed(2)})
-                        </span>
-                      </td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-3 font-sans font-medium text-slate-800">
-                      Credibility / halo ({facts.credibility}) <span className="text-emerald-700">[+]</span>
-                    </td>
-                    {archetypes.map((a) => (
-                      <td key={a} className="py-2.5 px-3 text-right text-slate-700">
-                        {ARCHETYPE_BASE_WEIGHTS[a].credibility.toFixed(2)}{' '}
-                        <span className="text-emerald-700 font-semibold">
-                          (+{(ARCHETYPE_BASE_WEIGHTS[a].credibility * facts.credibility).toFixed(2)})
-                        </span>
-                      </td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-3 font-sans font-medium text-slate-800">
-                      Funding ({facts.funding}) <span className="text-emerald-700">[+]</span>
-                    </td>
-                    {archetypes.map((a) => (
-                      <td key={a} className="py-2.5 px-3 text-right text-slate-700">
-                        {ARCHETYPE_BASE_WEIGHTS[a].funding.toFixed(2)}{' '}
-                        <span className="text-emerald-700 font-semibold">
-                          (+{(ARCHETYPE_BASE_WEIGHTS[a].funding * facts.funding).toFixed(2)})
-                        </span>
-                      </td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-3 font-sans font-medium text-slate-800">
-                      Network and mentor ({facts.networkAndMentor}) <span className="text-emerald-700">[+]</span>
-                    </td>
-                    {archetypes.map((a) => (
-                      <td key={a} className="py-2.5 px-3 text-right text-slate-700">
-                        {ARCHETYPE_BASE_WEIGHTS[a].networkAndMentor.toFixed(2)}{' '}
-                        <span className="text-emerald-700 font-semibold">
-                          (+{(ARCHETYPE_BASE_WEIGHTS[a].networkAndMentor * facts.networkAndMentor).toFixed(2)})
-                        </span>
-                      </td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td className="py-2.5 px-3 font-sans font-medium text-slate-800">
-                      Impact alignment ({facts.impactAlignment}) <span className="text-emerald-700">[+]</span>
-                    </td>
-                    {archetypes.map((a) => (
-                      <td key={a} className="py-2.5 px-3 text-right text-slate-700">
-                        {ARCHETYPE_BASE_WEIGHTS[a].impactAlignment.toFixed(2)}{' '}
-                        <span className="text-emerald-700 font-semibold">
-                          (+{(ARCHETYPE_BASE_WEIGHTS[a].impactAlignment * facts.impactAlignment).toFixed(2)})
-                        </span>
-                      </td>
-                    ))}
-                  </tr>
-                  <tr className="bg-rose-50/30">
-                    <td className="py-2.5 px-3 font-sans font-medium text-slate-800">
-                      Disruption cost ({facts.disruptionCost}), subtracted{' '}
-                      <span className="text-rose-700">[−]</span>
-                    </td>
-                    {archetypes.map((a) => (
-                      <td key={a} className="py-2.5 px-3 text-right text-slate-700">
-                        {ARCHETYPE_BASE_WEIGHTS[a].disruptionCost.toFixed(2)}{' '}
-                        <span className="text-rose-700 font-semibold">
-                          (−{(ARCHETYPE_BASE_WEIGHTS[a].disruptionCost * facts.disruptionCost).toFixed(2)})
-                        </span>
-                      </td>
-                    ))}
-                  </tr>
-                  <tr className="bg-rose-50/30">
-                    <td className="py-2.5 px-3 font-sans font-medium text-slate-800">
-                      Delay to payoff ({facts.delayToPayoff}), subtracted{' '}
-                      <span className="text-rose-700">[−]</span>
-                    </td>
-                    {archetypes.map((a) => (
-                      <td key={a} className="py-2.5 px-3 text-right text-slate-700">
-                        {ARCHETYPE_BASE_WEIGHTS[a].delayToPayoff.toFixed(2)}{' '}
-                        <span className="text-rose-700 font-semibold">
-                          (−{(ARCHETYPE_BASE_WEIGHTS[a].delayToPayoff * facts.delayToPayoff).toFixed(2)})
-                        </span>
-                      </td>
-                    ))}
-                  </tr>
+                <tbody className="divide-y divide-stone-200 bg-white font-mono tabular-nums">
+                  {factorRows.map((row) => {
+                    const isCost = row.kind === 'cost';
+                    return (
+                      <tr key={row.key} className={isCost ? 'bg-rose-50/30' : undefined}>
+                        <td className="py-2.5 px-4 font-sans font-medium text-slate-800">
+                          {row.label} ({facts[row.key]}){' '}
+                          <span className={isCost ? 'text-rose-700' : 'text-emerald-700'}>
+                            {isCost ? '[−]' : '[+]'}
+                          </span>
+                        </td>
+                        {archetypes.map((a) => {
+                          const weight = ARCHETYPE_BASE_WEIGHTS[a][row.key];
+                          const contribution = (weight * facts[row.key]).toFixed(2);
+                          return (
+                            <td key={a} className="py-2.5 px-4 text-right text-slate-700 whitespace-nowrap">
+                              {weight.toFixed(2)}{' '}
+                              <span
+                                className={`font-semibold ${
+                                  isCost ? 'text-rose-700' : 'text-emerald-700'
+                                }`}
+                              >
+                                ({isCost ? `−${contribution}` : `+${contribution}`})
+                              </span>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
                 </tbody>
                 <tfoot className="bg-stone-100 border-t-2 border-stone-300 font-mono">
                   <tr>

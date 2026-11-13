@@ -249,7 +249,7 @@ export const App: React.FC = () => {
                 onClick={() => navigateRoute('/')}
                 className="min-h-[44px] px-5 py-2.5 bg-[#14161A] hover:bg-[#D92B2B] text-white text-xs font-mono font-bold uppercase transition-colors"
               >
-                Return to Home (/)
+                Return to Home
               </button>
             </div>
           </section>

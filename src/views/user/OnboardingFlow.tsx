@@ -24,6 +24,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
   const completeOnboarding = useNorthStore((s) => s.completeOnboarding);
 
   const [step, setStep] = useState<1 | 2>(1);
+  const [step1Error, setStep1Error] = useState<string | null>(null);
   const [name, setName] = useState(user.name || 'Amara Okafor');
   const [originCountry, setOriginCountry] = useState<DestinationId>(user.originCountry || 'nigeria');
   const [startingMode, setStartingMode] = useState<StartingMode>(user.startingMode || 'Builder');
@@ -66,13 +67,39 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
     }
   };
 
+  const validateStep1 = (): boolean => {
+    if (!name.trim()) {
+      setStep1Error('Enter your name before continuing.');
+      return false;
+    }
+    if (
+      startingMode === 'Builder' &&
+      goalCareerId === 'custom-unsupported' &&
+      !customGoalText.trim()
+    ) {
+      setStep1Error('Enter a custom career goal before continuing.');
+      return false;
+    }
+    if (startingMode === 'Decider' && deciderIds.length < 2) {
+      setStep1Error('Select at least 2 career ideas to compare side-by-side.');
+      return false;
+    }
+    setStep1Error(null);
+    return true;
+  };
+
   const handleFinish = () => {
+    if (!validateStep1()) {
+      setStep(1);
+      return;
+    }
     completeOnboarding({
-      name,
+      name: name.trim(),
       originCountry,
       startingMode,
       goalCareerId: startingMode === 'Decider' ? deciderIds[0] : goalCareerId,
-      customGoalText: goalCareerId === 'custom-unsupported' ? customGoalText : undefined,
+      customGoalText:
+        goalCareerId === 'custom-unsupported' ? customGoalText.trim() : undefined,
       engineeringTrack: goalCareerId === 'engineering' ? engineeringTrack : undefined,
       destinationId,
       institutionOrCity: institutionOrCity.trim() || undefined,
@@ -98,12 +125,12 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
           </span>
         </div>
         <div className="type-label text-[#93C5FD]">
-          {step === 1 ? 'Step 1 of 2 · Minimal Signup (CI-1)' : 'Step 2 of 2 · Value Orientation (VO-1..3)'}
+          {step === 1 ? 'Step 1 of 2 · Your Starting Point' : 'Step 2 of 2 · Value Orientation'}
         </div>
         <p className="type-dark-body text-[#D1D5DB]">
           {step === 1
-            ? 'Rule CI-1: Signup asks only these three things. Everything else is requested progressively when relevant, with a clear reason.'
-            : 'Rule VO-1: Two people with the same goal can want different things. Pick a starter archetype and nudge the weights—or finish immediately with Balanced Builder.'}
+            ? 'We only ask these three questions to get started. Everything else is asked later when needed, with a clear reason.'
+            : 'Two people with the same goal can prioritize different tradeoffs. Choose a starting archetype and adjust the sliders, or keep Balanced Builder.'}
         </p>
       </header>
 
@@ -121,10 +148,15 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
               <input
                 id="onboarding-name"
                 type="text"
+                maxLength={80}
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (step1Error) setStep1Error(null);
+                }}
+                aria-invalid={step1Error && !name.trim() ? true : undefined}
                 placeholder="Your name"
-                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-sm text-[#14161A] bg-[#F9F9F7]"
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-base sm:text-sm text-[#14161A] bg-[#F9F9F7]"
               />
             </div>
 
@@ -139,7 +171,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                 id="onboarding-origin"
                 value={originCountry}
                 onChange={(e) => setOriginCountry(e.target.value as DestinationId)}
-                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-sm text-[#14161A] bg-[#F9F9F7]"
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-base sm:text-sm text-[#14161A] bg-[#F9F9F7]"
               >
                 {DESTINATIONS.map((d) => (
                   <option key={d.id} value={d.id}>
@@ -153,7 +185,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
           {/* 3. Where do you want to go (Starting Mode + Target Career & Destination) */}
           <div className="bg-white border-2 border-[#14161A] p-4 sm:p-5 space-y-4">
             <span className="block text-xs font-mono font-bold uppercase tracking-wider text-[#14161A]">
-              3. Where do you want to go? (Starting Mode — K4)
+              3. Where do you want to go?
             </span>
 
             {/* 3 Starting Modes — 1 col on small phones, 3 cols on sm+ */}
@@ -194,13 +226,13 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                     htmlFor="onboarding-career"
                     className="block text-xs font-semibold text-[#14161A] mb-1.5"
                   >
-                    Target Career Field (13 Seeded Fields + PI-8 Test)
+                    Target Career Field
                   </label>
                   <select
                     id="onboarding-career"
                     value={goalCareerId}
                     onChange={(e) => setGoalCareerId(e.target.value as CareerFieldId)}
-                    className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-sm font-medium text-[#14161A] bg-[#F9F9F7]"
+                    className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-base sm:text-sm font-medium text-[#14161A] bg-[#F9F9F7]"
                   >
                     {CAREER_FIELDS.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -242,14 +274,18 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                       htmlFor="onboarding-custom-goal"
                       className="block text-xs font-semibold text-amber-900 mb-1.5"
                     >
-                      Enter Custom Unlisted Career (Demonstrates PI-8 Honest Fallback)
+                      Enter Custom Career Goal
                     </label>
                     <input
                       id="onboarding-custom-goal"
                       type="text"
+                      maxLength={100}
                       value={customGoalText}
-                      onChange={(e) => setCustomGoalText(e.target.value)}
-                      className="min-h-[44px] w-full px-3 py-2 border-2 border-amber-500 bg-amber-50 text-sm text-[#14161A]"
+                      onChange={(e) => {
+                        setCustomGoalText(e.target.value);
+                        if (step1Error) setStep1Error(null);
+                      }}
+                      className="min-h-[44px] w-full px-3 py-2 border-2 border-amber-500 bg-amber-50 text-base sm:text-sm text-[#14161A]"
                     />
                   </div>
                 )}
@@ -259,7 +295,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
             {startingMode === 'Decider' && (
               <div className="space-y-2 pt-1">
                 <span className="block text-xs font-semibold text-[#14161A]">
-                  Pick 2–3 Career Ideas to Compare Side-by-Side (SM-2):
+                  Pick 2–3 Career Ideas to Compare:
                 </span>
                 <div className="max-h-60 overflow-y-auto space-y-1.5 pr-1">
                   {CAREER_FIELDS.filter((c) => c.id !== 'custom-unsupported').map((c) => {
@@ -286,7 +322,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
 
             {startingMode === 'Explorer' && (
               <div className="bg-[#F2F1EC] border border-[#14161A] p-3 text-sm text-[#4B5563]">
-                <strong className="text-[#14161A]">Explorer Mode (SM-1 &amp; K3):</strong> After signup, North will guide you through a short advisory discovery across all 13 career fields. You always keep 100% control of the destination.
+                <strong className="text-[#14161A]">Explorer Mode:</strong> After signup, North will guide you through a short advisory discovery across all 13 career fields. You always keep full control of your destination.
               </div>
             )}
 
@@ -296,13 +332,13 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                 htmlFor="onboarding-destination"
                 className="block text-xs font-semibold text-[#14161A]"
               >
-                Target Destination Country or Hub (PI-1)
+                Target Destination Country or Hub
               </label>
               <select
                 id="onboarding-destination"
                 value={destinationId}
                 onChange={(e) => setDestinationId(e.target.value as DestinationId)}
-                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-sm font-medium text-[#14161A] bg-[#F9F9F7]"
+                className="min-h-[44px] w-full px-3 py-2 border-2 border-[#14161A] text-base sm:text-sm font-medium text-[#14161A] bg-[#F9F9F7]"
               >
                 {DESTINATIONS.map((d) => (
                   <option key={d.id} value={d.id}>
@@ -313,26 +349,41 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
 
               <input
                 type="text"
+                maxLength={100}
                 value={institutionOrCity}
                 onChange={(e) => setInstitutionOrCity(e.target.value)}
-                placeholder="Optional city, state, or institution (PI-7 specificity)"
-                className="min-h-[44px] w-full px-3 py-2 border border-[#14161A] text-sm text-[#14161A] bg-[#F9F9F7]"
+                placeholder="Optional city, state, or institution"
+                aria-label="Optional city, state, or institution"
+                className="min-h-[44px] w-full px-3 py-2 border border-[#14161A] text-base sm:text-sm text-[#14161A] bg-[#F9F9F7]"
               />
             </div>
           </div>
+
+          {step1Error && (
+            <div
+              role="alert"
+              className="p-3 bg-rose-50 border-2 border-[#D92B2B] text-sm font-semibold text-rose-950"
+            >
+              {step1Error}
+            </div>
+          )}
 
           <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2.5">
             <button
               type="button"
               onClick={handleFinish}
               className="min-h-[44px] px-4 py-2.5 border-2 border-[#14161A] bg-white text-[#14161A] text-xs font-mono font-bold uppercase hover:bg-[#F2F1EC] transition-colors"
-              title="VO-1: A user can finish onboarding without choosing; Balanced Builder default applies."
+              title="Finish onboarding now with the Balanced Builder default"
             >
               Skip Step 2 (Use Default)
             </button>
             <button
               type="button"
-              onClick={() => setStep(2)}
+              onClick={() => {
+                if (validateStep1()) {
+                  setStep(2);
+                }
+              }}
               className="min-h-[44px] flex-1 py-2.5 px-5 bg-[#14161A] hover:bg-[#D92B2B] text-white text-xs font-mono font-bold uppercase transition-colors flex items-center justify-center gap-2"
             >
               <span>Next: Value Orientation</span>
@@ -345,7 +396,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
           {/* 4 Starter Archetypes (VO-1) */}
           <div className="space-y-2.5">
             <span className="block text-xs font-mono font-bold uppercase tracking-wider text-[#14161A]">
-              1. Pick a Starter Archetype (VO-1)
+              1. Pick a Starter Archetype
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {(
@@ -399,7 +450,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2 text-sm font-extrabold text-[#14161A]">
                 <Sliders className="w-4 h-4 text-[#1D4ED8] shrink-0" />
-                <span>2. Nudge Weights Underneath (VO-2 &amp; VO-3)</span>
+                <span>2. Fine-Tune Tradeoff Weights</span>
               </div>
               <button
                 type="button"
@@ -462,7 +513,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
             <div className="bg-[#F2F1EC] border border-[#14161A] p-3.5 space-y-2.5">
               <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-[#1D4ED8]">
                 <Sparkles className="w-4 h-4 shrink-0" />
-                <span>How this affects your scores (Rule VO-7):</span>
+                <span>How this affects your scores:</span>
               </div>
               <p className="text-xs sm:text-sm text-[#4B5563] leading-relaxed">
                 {ARCHETYPE_DESCRIPTIONS[archetype].plainExplanation}

@@ -119,7 +119,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <header className="border-b-[3px] border-[#14161A] pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div className="min-w-0">
             <h1 className="type-display text-[#14161A]">
-              This Week&apos;s Priority Schedule (Cap: {weeklyPriorityTasks.length}/{user.effectiveWeeklyCap})
+              This Week&apos;s Priority Schedule
             </h1>
             <p className="type-label text-[#1D4ED8] mt-1.5">
               Departure Corridor · {pathway.careerTitle} → {destOption.flag} {pathway.destinationName}
@@ -224,11 +224,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </span>
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <p className="text-sm font-bold text-white leading-snug">
+                <p className="text-sm font-bold text-white leading-snug break-words min-w-0">
                   {weeklyPriorityTasks[0].title}
                 </p>
-                {weeklyPriorityTasks[0].status !== 'Completed' ? (
+                {weeklyPriorityTasks[0].status === 'Completed' ? (
+                  <span className="px-3 py-1.5 bg-[#065F46] text-white text-xs font-mono font-bold uppercase self-start sm:self-auto shrink-0">
+                    Done
+                  </span>
+                ) : weeklyPriorityTasks[0].status === 'Locked' ? (
+                  <span className="px-3 py-1.5 bg-[#1F242D] border border-[#323846] text-[#CBD5E1] text-xs font-mono font-bold uppercase self-start sm:self-auto shrink-0">
+                    Locked
+                  </span>
+                ) : (
                   <button
+                    type="button"
                     onClick={() =>
                       completeTask(
                         weeklyPriorityTasks[0].id,
@@ -239,10 +248,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   >
                     Mark Done
                   </button>
-                ) : (
-                  <span className="px-3 py-1.5 bg-[#065F46] text-white text-xs font-mono font-bold uppercase self-start sm:self-auto">
-                    Done
-                  </span>
                 )}
               </div>
             </div>
@@ -259,7 +264,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <CalendarClock className="w-5 h-5 text-[#14161A] shrink-0 mt-0.5" />
               <div className="text-sm text-[#14161A] leading-relaxed">
                 <strong className="font-bold">
-                  Capacity Adjusted Neutral Check-in (Rules EX-4 &amp; EX-6):
+                  Weekly Pace Adjusted:
                 </strong>{' '}
                 A few tasks slipped recently, so we scaled your weekly list down to{' '}
                 <strong>{user.effectiveWeeklyCap} core priorities</strong> to protect
@@ -275,20 +280,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   { key: 'drop_lowest', label: 'Drop Lowest Task' },
                   { key: 'replan', label: 'Replan Week' },
                 ] as const
-              ).map((opt) => (
-                <button
-                  key={opt.key}
-                  onClick={() =>
-                    applyBehindScheduleOption(
-                      opt.key,
-                      weeklyPriorityTasks[weeklyPriorityTasks.length - 1]?.id
-                    )
-                  }
-                  className="min-h-[44px] px-3 py-2 bg-white hover:bg-[#E4E2DA] border border-[#14161A] text-xs font-semibold text-[#14161A] transition-colors"
-                >
-                  {opt.label}
-                </button>
-              ))}
+              ).map((opt) => {
+                const isDisabled =
+                  opt.key === 'reduce_scope' && user.effectiveWeeklyCap <= 1;
+                return (
+                  <button
+                    type="button"
+                    key={opt.key}
+                    disabled={isDisabled}
+                    onClick={() =>
+                      applyBehindScheduleOption(
+                        opt.key,
+                        weeklyPriorityTasks[weeklyPriorityTasks.length - 1]?.id
+                      )
+                    }
+                    className="min-h-[44px] px-3 py-2 bg-white hover:bg-[#E4E2DA] disabled:opacity-50 disabled:cursor-not-allowed border border-[#14161A] text-xs font-semibold text-[#14161A] transition-colors"
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
             </div>
           </section>
         )}
@@ -297,18 +308,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             THIS WEEK'S TOP PRIORITIES TIMETABLE (Capped strictly at 3 — HS-2, EX-6)
            ===================================================================== */}
         <section aria-labelledby="weekly-priorities-heading" className="space-y-3">
-          <div className="flex flex-wrap items-end justify-between gap-2">
-            <div>
-              <h2
-                id="weekly-priorities-heading"
-                className="type-section text-[#14161A]"
-              >
-                This Week&apos;s Priorities (Rule HS-2 &amp; K14)
-              </h2>
-              <p className="type-body text-[#4B5563] mt-0.5">
-                Capped at {user.effectiveWeeklyCap} tasks/week ({user.weeklyHoursAvailable}h/wk capacity) — never a 25-task dump.
-              </p>
-            </div>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2
+              id="weekly-priorities-heading"
+              className="type-section text-[#14161A]"
+            >
+              Top Weekly Priorities
+            </h2>
             <button
               onClick={() => setActiveTab('roadmap')}
               className="min-h-[44px] px-3 py-2 text-xs font-mono font-bold uppercase text-[#1D4ED8] hover:bg-[#EFF6FF] border border-transparent hover:border-[#1D4ED8] transition-colors"
@@ -327,7 +333,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
 
             <div className="divide-y divide-[#D6D5CE]">
-              {weeklyPriorityTasks.map((task, index) => {
+              {weeklyPriorityTasks.length === 0 ? (
+                <div className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#F9F9F7]">
+                  <p className="text-sm text-[#4B5563]">
+                    No active tasks scheduled this week. Open your Roadmap to schedule or restore milestones.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('roadmap')}
+                    className="min-h-[44px] px-4 py-2 bg-[#14161A] hover:bg-[#D92B2B] text-white text-xs font-mono font-bold uppercase shrink-0 transition-colors"
+                  >
+                    Open Roadmap
+                  </button>
+                </div>
+              ) : (
+                weeklyPriorityTasks.map((task, index) => {
                 const isDone = task.status === 'Completed';
                 const isLocked = task.status === 'Locked';
                 const code = `W1-0${index + 1}`;
@@ -363,33 +383,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     {/* Title & Explanation */}
                     <div className="min-w-0">
                       <div className="flex items-start gap-2.5">
-                        <button
-                          disabled={isLocked || isDone}
-                          onClick={() =>
-                            completeTask(task.id, task.unlocksIdentityItem)
-                          }
-                          className="min-h-[44px] min-w-[44px] -ml-2 -mt-2 inline-flex items-center justify-center text-[#14161A] hover:text-[#1D4ED8] disabled:cursor-not-allowed shrink-0"
-                          title={
-                            isLocked
-                              ? 'Prerequisite task must finish first (RM-3)'
-                              : 'Complete task'
-                          }
-                          aria-label={
-                            isDone
-                              ? `${task.title} completed`
-                              : isLocked
-                              ? `${task.title} locked`
-                              : `Mark ${task.title} complete`
-                          }
+                        <span
+                          aria-hidden="true"
+                          className="mt-0.5 shrink-0"
                         >
                           {isDone ? (
                             <CheckCircle2 className="w-5 h-5 text-[#047857]" />
                           ) : isLocked ? (
                             <Lock className="w-5 h-5 text-[#4B5563]" />
                           ) : (
-                            <Circle className="w-5 h-5" />
+                            <Circle className="w-5 h-5 text-[#14161A]" />
                           )}
-                        </button>
+                        </span>
 
                         <div className="min-w-0">
                           <h3
@@ -405,7 +410,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                             {task.priorityExplanation}
                           </p>
                           <div className="hidden sm:block text-[11px] font-mono text-[#4B5563] mt-1">
-                            Priority #{index + 1} · {task.dueDate}
+                            {task.dueDate}
                           </div>
                         </div>
                       </div>
@@ -428,18 +433,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         </span>
                       ) : (
                         <button
+                          type="button"
                           onClick={() =>
                             completeTask(task.id, task.unlocksIdentityItem)
                           }
+                          aria-label={`Mark ${task.title} complete`}
                           className="min-h-[44px] w-full sm:w-auto px-3 py-1.5 border-2 border-[#14161A] bg-white hover:bg-[#14161A] hover:text-white font-mono text-[11px] font-bold uppercase transition-colors"
                         >
-                          {task.layer === 'today' ? 'TODAY · DONE' : 'THIS WEEK'}
+                          Mark Done
                         </button>
                       )}
                     </div>
                   </div>
                 );
-              })}
+              })
+              )}
             </div>
           </div>
         </section>
@@ -458,8 +466,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   <Sparkles className="w-3.5 h-3.5 shrink-0" />
                   <span>
                     {featuredOpportunity.isImmediateAlertEligible
-                      ? 'Immediate Exceptional Alert (LV-5)'
-                      : 'High-Leverage Opportunity Now (HS-3)'}
+                      ? 'Immediate High-Fit Alert'
+                      : 'High-Leverage Opportunity Now'}
                   </span>
                 </div>
                 <h3 className="text-lg font-extrabold text-[#14161A] leading-snug">
@@ -507,16 +515,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
               <button
-                onClick={() =>
-                  setActiveBreakdownOpportunityId(
-                    featuredOpportunity.opportunity.id
-                  )
-                }
-                className="min-h-[44px] px-4 py-2.5 border-2 border-[#14161A] bg-white hover:bg-[#F2F1EC] text-[#14161A] text-xs font-mono font-bold uppercase transition-colors"
-              >
-                Explain Score (LV-6)
-              </button>
-              <button
                 onClick={() => {
                   updateOpportunityLifecycle(
                     featuredOpportunity.opportunity.id,
@@ -524,9 +522,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   );
                   setActiveTab('roadmap');
                 }}
-                className="min-h-[44px] flex-1 py-2.5 px-4 bg-[#14161A] hover:bg-[#D92B2B] text-white text-xs font-mono font-bold uppercase text-center transition-colors"
+                className="min-h-[44px] w-full py-2.5 px-4 bg-[#14161A] hover:bg-[#D92B2B] text-white text-xs font-mono font-bold uppercase text-center transition-colors"
               >
-                Start Preparing (Spawns Prep Tasks — EX-1)
+                Start Preparing (Adds Prep Tasks)
               </button>
             </div>
           </section>
@@ -543,13 +541,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           aria-label="Corridor Standing"
           className="border-2 border-[#14161A] bg-white p-4 sm:p-5 space-y-4"
         >
-          <div>
-            <h2 className="text-lg font-extrabold text-[#14161A]">
-              {pathway.careerTitle} → {pathway.destinationName}
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-sm font-extrabold uppercase tracking-wider text-[#14161A]">
+              Corridor Standing
             </h2>
-            <div className="text-[11px] font-mono uppercase tracking-wider text-[#D92B2B] font-bold mt-1">
-              Corridor Standing · Level {progressMeta.current.level} of 6
-            </div>
+            <span className="text-[11px] font-mono uppercase tracking-wider text-[#D92B2B] font-bold">
+              Level {progressMeta.current.level} of 6
+            </span>
           </div>
 
           <ol className="space-y-2.5 border-l-2 border-[#14161A] pl-3.5">
@@ -586,7 +584,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <section className="border-2 border-[#14161A] bg-[#F2F1EC] p-4 space-y-2">
             <div className="flex items-center gap-2 text-xs font-bold text-[#14161A]">
               <Info className="w-4 h-4 text-[#1D4ED8] shrink-0" />
-              <span>Submission vs. Outcome Pattern Insight (Rule EX-3 &amp; K13)</span>
+              <span>Application Outcome Pattern</span>
             </div>
             <p className="text-sm text-[#4B5563] leading-relaxed">
               {insights.conversionInsight.message}
@@ -602,7 +600,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <section className="border-2 border-[#14161A] bg-[#F2F1EC] p-4 space-y-2.5">
             <div className="flex items-center gap-2 text-xs font-bold text-[#14161A]">
               <Compass className="w-4 h-4 text-[#14161A] shrink-0" />
-              <span>Strategic Plan &amp; Timeline Check (Rule EX-8)</span>
+              <span>Timeline Check</span>
             </div>
             <p className="text-sm text-[#4B5563] leading-relaxed">
               {insights.timelinePushback.message}
@@ -620,7 +618,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <section className="border-2 border-amber-500 bg-amber-50 p-4 space-y-2.5">
             <div className="flex items-center gap-2 text-xs font-bold text-amber-950">
               <Sliders className="w-4 h-4 text-amber-800 shrink-0" />
-              <span>Value Orientation Re-Check (Rule VO-7)</span>
+              <span>Value Orientation Check</span>
             </div>
             <p className="text-sm text-amber-950 leading-relaxed">
               {insights.valueOrientationRecheck.message}

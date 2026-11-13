@@ -122,18 +122,18 @@ export const VerificationBadge: React.FC<VerificationBadgeProps> = ({
           {isStale && (
             <p className="text-xs text-amber-900 flex items-center gap-1.5 font-medium">
               <AlertTriangle className="w-3.5 h-3.5 text-amber-700 shrink-0" />
-              Stale record warning (PI-6): Last verified {lastVerified}. Re-verification queued.
+              Outdated record: Last verified {lastVerified}. Re-verification queued.
             </p>
           )}
           {!isDeadlineVerified && (
             <p className="text-xs text-amber-900 flex items-center gap-1.5 font-medium">
               <AlertTriangle className="w-3.5 h-3.5 text-amber-700 shrink-0" />
-              Rule OP-5: Exact cycle deadline is unconfirmed — labeled &ldquo;Verification required&rdquo;.
+              Exact cycle deadline is unconfirmed — labeled &ldquo;Verification required&rdquo;.
             </p>
           )}
           {state !== 'verified' && (
             <p className="text-xs text-[#4B5563]">
-              Rule OP-6: Unverified items are strictly capped at <strong>Normal</strong> Leverage until verified.
+              Unverified items are capped at <strong>Normal</strong> Leverage until verified.
             </p>
           )}
         </div>

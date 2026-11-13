@@ -36,6 +36,13 @@ export const ScoreBreakdownModal: React.FC<ScoreBreakdownModalProps> = ({
 
   const { opportunity, breakdown } = evaluatedOpportunity;
 
+  const formatSigned = (value: number) => {
+    const normalized = Math.abs(value) < 0.005 ? 0 : value;
+    if (normalized > 0) return `+${normalized.toFixed(2)}`;
+    if (normalized < 0) return `−${Math.abs(normalized).toFixed(2)}`;
+    return '0.00';
+  };
+
   const levelBadgeColor = {
     Exceptional: 'bg-[#1D4ED8] text-white border-[#1D4ED8]',
     'High Leverage': 'bg-[#EFF6FF] text-[#1D4ED8] border-[#1D4ED8]',
@@ -53,15 +60,15 @@ export const ScoreBreakdownModal: React.FC<ScoreBreakdownModalProps> = ({
         }
       }}
       aria-labelledby="score-breakdown-title"
-      className="fixed inset-0 z-50 m-0 mt-auto md:m-auto w-full max-w-full md:max-w-[680px] max-h-[88dvh] md:max-h-[85dvh] overflow-y-auto bg-[#F9F9F7] text-[#14161A] rounded-t-2xl md:rounded-none border-t-2 md:border-2 border-[#14161A] p-0 shadow-2xl"
+      className="fixed inset-0 z-50 m-0 mt-auto md:m-auto w-full max-w-full md:max-w-[680px] max-h-[88dvh] md:max-h-[85dvh] overflow-y-auto bg-[#F9F9F7] text-[#14161A] rounded-t-2xl md:rounded-none border-t-2 md:border-2 border-[#14161A] p-0 shadow-2xl backdrop:bg-[#14161A]/70"
     >
-      <div className="p-5 md:p-6 space-y-5">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4 border-b-2 border-[#14161A] pb-4">
+      <div className="p-5 md:p-6 pt-0 md:pt-0 space-y-5">
+        {/* Sticky Header so Close button stays reachable on small screens */}
+        <div className="sticky top-0 z-10 bg-[#F9F9F7] pt-5 md:pt-6 flex items-start justify-between gap-4 border-b-2 border-[#14161A] pb-4">
           <div className="space-y-1.5 min-w-0">
             <h3
               id="score-breakdown-title"
-              className="text-lg md:text-xl font-extrabold text-[#14161A] leading-snug"
+              className="text-lg md:text-xl font-extrabold text-[#14161A] leading-snug break-words"
             >
               {opportunity.title}
             </h3>
@@ -71,7 +78,7 @@ export const ScoreBreakdownModal: React.FC<ScoreBreakdownModalProps> = ({
               </span>
               <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#14161A] text-[#F9F9F7] font-mono text-[11px] uppercase">
                 <Calculator className="w-3.5 h-3.5 text-[#93C5FD]" />
-                <span>Explainable Leverage Score · Rule LV-6</span>
+                <span>Leverage Score Breakdown</span>
               </span>
             </div>
           </div>
@@ -103,10 +110,8 @@ export const ScoreBreakdownModal: React.FC<ScoreBreakdownModalProps> = ({
                 <span className="text-[11px] font-mono uppercase text-[#4B5563] block">
                   Net Score
                 </span>
-                <span className="text-2xl font-mono font-bold text-[#14161A]">
-                  {breakdown.rawScore > 0
-                    ? `+${breakdown.rawScore.toFixed(2)}`
-                    : breakdown.rawScore.toFixed(2)}
+                <span className="text-2xl font-mono font-bold tabular-nums text-[#14161A]">
+                  {formatSigned(breakdown.rawScore)}
                 </span>
               </div>
               <span
@@ -125,8 +130,8 @@ export const ScoreBreakdownModal: React.FC<ScoreBreakdownModalProps> = ({
             <div className="bg-amber-50 border-2 border-amber-500 p-3 flex items-start gap-2.5 text-sm text-amber-950">
               <ShieldAlert className="w-4 h-4 text-amber-800 shrink-0 mt-0.5" />
               <div>
-                <strong>Capped at Normal (Rule OP-6):</strong> Because this
-                opportunity’s verification state is{' '}
+                <strong>Capped at Normal:</strong> Because this
+                opportunity&rsquo;s verification state is{' '}
                 <code className="font-mono bg-amber-100 px-1.5 py-0.5 text-xs">
                   {opportunity.verification.state}
                 </code>
@@ -178,19 +183,17 @@ export const ScoreBreakdownModal: React.FC<ScoreBreakdownModalProps> = ({
                         {f.kind === 'benefit' ? '+ benefit' : '− cost'}
                       </span>
                     </td>
-                    <td className="py-2.5 px-3 text-right font-mono text-[#4B5563]">
+                    <td className="py-2.5 px-3 text-right font-mono tabular-nums text-[#4B5563]">
                       {f.weightApplied.toFixed(2)}
                     </td>
                     <td
-                      className={`py-2.5 px-3 text-right font-mono font-bold ${
+                      className={`py-2.5 px-3 text-right font-mono font-bold tabular-nums ${
                         f.weightedContribution >= 0
                           ? 'text-emerald-800'
                           : 'text-[#D92B2B]'
                       }`}
                     >
-                      {f.weightedContribution >= 0
-                        ? `+${f.weightedContribution.toFixed(2)}`
-                        : f.weightedContribution.toFixed(2)}
+                      {formatSigned(f.weightedContribution)}
                     </td>
                   </tr>
                 ))}
@@ -216,8 +219,8 @@ export const ScoreBreakdownModal: React.FC<ScoreBreakdownModalProps> = ({
                   <td colSpan={2} className="py-2.5 px-3">
                     Resulting Score (−10 to +10)
                   </td>
-                  <td className="py-2.5 px-3 text-right">
-                    {breakdown.rawScore.toFixed(2)} ({breakdown.finalLevel})
+                  <td className="py-2.5 px-3 text-right tabular-nums">
+                    {formatSigned(breakdown.rawScore)} ({breakdown.finalLevel})
                   </td>
                 </tr>
               </tfoot>
@@ -235,21 +238,27 @@ export const ScoreBreakdownModal: React.FC<ScoreBreakdownModalProps> = ({
             <div className="flex items-center gap-1.5 text-sm font-bold text-[#14161A]">
               <Layers className="w-4 h-4 text-[#1D4ED8] shrink-0" />
               <span>
-                Combo Effect — Solves {breakdown.comboGapsClosedCount} Pathway
-                Gaps (LV-2)
+                Combo Effect — Closes {breakdown.comboGapsClosedCount} Pathway
+                Gaps
               </span>
             </div>
-            <ul className="list-disc list-inside text-sm text-[#4B5563] space-y-1 pt-0.5">
-              {breakdown.comboGapsTitles.map((title, i) => (
-                <li key={i}>{title}</li>
-              ))}
-            </ul>
+            {breakdown.comboGapsTitles.length > 0 ? (
+              <ul className="list-disc list-inside text-sm text-[#4B5563] space-y-1 pt-0.5">
+                {breakdown.comboGapsTitles.map((title, i) => (
+                  <li key={i}>{title}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-[#4B5563] pt-0.5">
+                No direct pathway requirement gaps closed by this opportunity.
+              </p>
+            )}
           </div>
 
           <div className="bg-white border-2 border-[#14161A] p-3.5 space-y-1.5">
             <div className="flex items-center gap-1.5 text-sm font-bold text-[#14161A]">
               <Sparkles className="w-4 h-4 text-[#1D4ED8] shrink-0" />
-              <span>Halo Effect — Credibility Signal (LV-3)</span>
+              <span>Halo Effect — Credibility Signal</span>
             </div>
             <p className="text-sm text-[#4B5563] leading-relaxed">
               {breakdown.haloNote}
@@ -261,7 +270,7 @@ export const ScoreBreakdownModal: React.FC<ScoreBreakdownModalProps> = ({
         {opportunity.lowFitReasons.length > 0 && (
           <div className="bg-[#F2F1EC] border border-[#14161A] p-3.5 space-y-1.5">
             <div className="text-sm font-bold text-[#14161A]">
-              Resource &amp; Disruption Tradeoffs Checked (LV-8)
+              Resource &amp; Disruption Tradeoffs
             </div>
             <ul className="list-disc list-inside text-sm text-[#4B5563] space-y-1">
               {opportunity.lowFitReasons.map((r, idx) => (
